@@ -8,5 +8,26 @@
 </head>
 <body>
     <h1>Welcome to Blackjack</h1>
+    <h2>There are <span id='numRooms'></span> rooms</h2>
+
 </body>
+<script >
+    var ws = new WebSocket("ws://localhost:4567/rooms");
+    var numRooms = document.getElementById("numRooms");
+
+
+    ws.onopen = function (event) {
+        console.log("Websocket to Rooms is open");
+    }
+
+    ws.onclose = function (event) {
+        console.log("Websocket to Rooms is closed");
+    }
+
+    ws.onmessage = function (event) {
+        numRooms.innerHTML = event.data;
+    }
+
+
+</script>
 </html>

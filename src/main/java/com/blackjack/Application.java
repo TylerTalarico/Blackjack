@@ -5,10 +5,13 @@ import java.util.Objects;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
+import com.blackjack.controller.RoomWebSocketHandler;
 import com.google.gson.Gson;
 import spark.TemplateEngine;
 import com.blackjack.application.WebServer;
 import spark.template.freemarker.FreeMarkerEngine;
+
+import static spark.Spark.webSocket;
 
 public class Application {
 
@@ -41,6 +44,8 @@ public class Application {
 
         // inject web server into application
         final Application app = new Application(webServer);
+
+        webSocket("/rooms", RoomWebSocketHandler.class);
 
         // start the application up
         app.initialize();
