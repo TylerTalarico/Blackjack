@@ -6,6 +6,9 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 import com.blackjack.controller.GetHomeRoute;
+import com.blackjack.controller.PlayerServices;
+import com.blackjack.controller.PostSignInRoute;
+import com.blackjack.model.Player;
 import com.google.gson.Gson;
 import spark.TemplateEngine;
 
@@ -47,12 +50,15 @@ public class WebServer {
 
     private final TemplateEngine templateEngine;
     private final Gson gson;
+    private final PlayerServices playerServices;
 
     //
     // Constants
     //
 
-    private final String HOME_URL = "/";
+    public static final String HOME_URL = "/";
+
+    public static final String SIGNIN_URL = "/signin";
 
     /**
      * The constructor for the Web Server.
@@ -65,9 +71,10 @@ public class WebServer {
      * @throws NullPointerException
      *    If any of the parameters are {@code null}.
      */
-    public WebServer(Gson gson, TemplateEngine templateEngine) {
+    public WebServer(Gson gson, TemplateEngine templateEngine, PlayerServices ps) {
         this.gson = Objects.requireNonNull(gson, "gson cannot be null");
         this.templateEngine = Objects.requireNonNull(templateEngine, "templateEngine cannot be null");
+        this.playerServices = Objects.requireNonNull(ps, "playerServices cannot be null");
 
     }
 
@@ -120,7 +127,9 @@ public class WebServer {
         //// code clean; using small classes.
 
 
-        get(HOME_URL, new GetHomeRoute());
+        get(HOME_URL, new GetHomeRoute(templateEngine));
+
+        post(SIGNIN_URL, new PostSignInRoute(playerServices));
 
 
         LOG.config("WebServer is initialized.");

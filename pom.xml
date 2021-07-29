@@ -99,6 +99,8 @@
     </dependencies>
 
     <build>
+
+
         <plugins>
 
             <!-- START: Application build plugins -->

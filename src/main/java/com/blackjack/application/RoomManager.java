@@ -1,6 +1,13 @@
 package com.blackjack.application;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 public class RoomManager {
+
+
+    private final ConcurrentHashMap<String, Room> roomList = new ConcurrentHashMap<>();
+
+
 
     private static int numRooms = 0;
 
@@ -12,8 +19,6 @@ public class RoomManager {
         numRooms--;
     }
 
-    public static String getNumRooms() {
-        return "" + numRooms;
-    }
+    public static String getNumRooms() { return String.valueOf(numRooms); }
 
 }

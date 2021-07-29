@@ -10,6 +10,24 @@
     <h1>Welcome to Blackjack</h1>
     <h2>There are <span id='numRooms'></span> rooms</h2>
 
+    <form id="createRoom">
+        <input placeholder="Room Name"></input>
+        <button type= "submit" id="createRoomBtn">Create</button>
+    </form>
+
+    <#if player??>
+        <p>
+            Hello, ${player.name! 'testName'}!
+        </p>
+
+    <#else>
+        <form action="/signin" method="post">
+             <input placeholder="Enter Username" id="username" name="username"> </input>
+             <button type= "submit" id="signInBtn">Sign In</button>
+        </form>
+    </#if>
+
+
 </body>
 <script >
     var ws = new WebSocket("ws://localhost:4567/rooms");

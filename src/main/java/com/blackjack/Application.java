@@ -3,6 +3,7 @@ package com.blackjack;
 import java.util.Objects;
 import java.util.logging.Logger;
 
+import com.blackjack.controller.PlayerServices;
 import com.blackjack.controller.RoomWebSocketHandler;
 import com.google.gson.Gson;
 import spark.TemplateEngine;
@@ -36,9 +37,11 @@ public class Application {
         // response to Ajax requests.
         final Gson gson = new Gson();
 
-        final TemplateEngine templateEngine = new FreeMarkerEngine();
+        final TemplateEngine templateEngine = new FMTemplateEngine();
 
-        final WebServer webServer = new WebServer(gson, templateEngine);
+        final PlayerServices playerServices = new PlayerServices();
+
+        final WebServer webServer = new WebServer(gson, templateEngine, playerServices);
 
         // inject web server into application
         final Application app = new Application(webServer);
