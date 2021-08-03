@@ -6,6 +6,7 @@ public class Player {
 
     private final String name;
     private int pointCount = 0;
+    private final Hand hand = new Hand();
 
 
     public Player (String name){
@@ -25,5 +26,13 @@ public class Player {
             return ((Player) obj).getName().equals(this.name);
         }
         return false;
+    }
+
+    public boolean isBust() {
+        return this.hand.getHandTotal() > 21;
+    }
+
+    public void deal(Card card) {
+        this.hand.addCard(card);
     }
 }

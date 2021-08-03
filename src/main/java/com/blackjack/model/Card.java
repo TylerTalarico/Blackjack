@@ -30,4 +30,14 @@ public class Card {
     public int value() {
         return this.value;
     }
+
+    public String id() {
+        return this.id;
+    }
+
+    public boolean equals(Object obj) {
+        assert (obj instanceof Card);
+        Card card = (Card)obj;
+        return card.id.equals(this.id) && card.suit == this.suit && card.value == this.value;
+    }
 }
