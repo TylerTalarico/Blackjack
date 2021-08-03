@@ -6,6 +6,7 @@ public class Game {
 
     private ArrayList<Player> playerList;
     private Player activePlayer;
+    private Deck deck;
     private int pointCap = 0;
     private Player winner = null;
     private boolean isStarted = false;
@@ -16,6 +17,7 @@ public class Game {
         this.playerList = list;
         this.pointCap = pointCap;
         this.activePlayer = list.get(0);
+        this.deck = Deck.newDeck();
     }
 
 
