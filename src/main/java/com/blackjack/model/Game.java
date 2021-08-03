@@ -4,16 +4,26 @@ import java.util.ArrayList;
 
 public class Game {
 
-    ArrayList<Player> playerList;
-    Player activePlayer;
-    int pointCap = 0;
-    Player winner = null;
+    private ArrayList<Player> playerList;
+    private Player activePlayer;
+    private int pointCap = 0;
+    private Player winner = null;
+    private boolean isStarted = false;
 
 
-    public Game(ArrayList<Player> list, int cap) {
+    public Game(ArrayList<Player> list, int pointCap) {
 
         this.playerList = list;
-        this.pointCap = cap;
-        this.activePlayer = list.get(1);
+        this.pointCap = pointCap;
+        this.activePlayer = list.get(0);
+    }
+
+
+    public boolean isStarted() {
+        return isStarted;
+    }
+
+    public void start() {
+        this.isStarted = true;
     }
 }

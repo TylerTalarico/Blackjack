@@ -6,21 +6,39 @@
 </head>
 <body>
 
+
+
+    <h1>
+        Room: ${roomName}
+    </h1>
+
     <ul id="playerList">
 
     </ul>
 
 
     <script>
-        var ws = new WebSocket("ws://localhost:4567/room" + ${roomName});
-        var playerList = document.getElementByID("playerList").innerHTML;
+        var ws = new WebSocket("ws://localhost:4567/roomJoin");
+        var playerList = document.getElementById("playerList");
+
+        var playerName = "${player.name! 'testPlayerName'}";
+        var roomName = "${roomName}";
+
+
 
         ws.onopen = function (event) {
-            console.log("Websocket to Rooms is open");
+            console.log("Websocket to Room is open");
+            let joinRequest = {
+                        messageType: "getRoomName",
+                        content: roomName
+                    }
+
+            ws.send(JSON.stringify(joinRequest));
         }
 
         ws.onclose = function (event) {
             console.log("Websocket to Rooms is closed");
+
         }
 
         ws.onmessage = function (event) {
@@ -30,14 +48,29 @@
         }
 
         function processMessage(data) {
-            let message = data.message;
+            let message = data.messageType;
             if (message === "playerConnection") {
+                console.log("New player joined room");
                 let players = data.players;
-                players.array.forEach(element => {
-                    playerList += "<li> " + element + "</li>";
+
+                console.log(players);
+                console.log(data);
+                playerList.innerHTML = "";
+                players.forEach(element => {
+                    playerList.innerHTML += "<li> " + element.name + "</li>";
                 });
             }
         }
+
+        window.onbeforeunload = function() {
+            let closeRequest = {
+                messageType: "playerClose",
+                content: roomName + " " + playerName
+            }
+
+            ws.send(JSON.stringify(closeRequest));
+        }
+
 
 
     </script>

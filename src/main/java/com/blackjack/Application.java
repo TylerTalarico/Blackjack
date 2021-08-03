@@ -3,12 +3,12 @@ package com.blackjack;
 import java.util.Objects;
 import java.util.logging.Logger;
 
+import com.blackjack.application.HomeWebSocketHandler;
+import com.blackjack.application.RoomWebSocketHandler;
 import com.blackjack.controller.PlayerServices;
-import com.blackjack.controller.RoomWebSocketHandler;
 import com.google.gson.Gson;
 import spark.TemplateEngine;
 import com.blackjack.application.WebServer;
-import spark.template.freemarker.FreeMarkerEngine;
 
 import static spark.Spark.webSocket;
 
@@ -46,7 +46,10 @@ public class Application {
         // inject web server into application
         final Application app = new Application(webServer);
 
-        webSocket("/rooms", RoomWebSocketHandler.class);
+
+        webSocket("/roomList", HomeWebSocketHandler.class);
+        webSocket("/roomJoin", RoomWebSocketHandler.class);
+
 
         // start the application up
         app.initialize();

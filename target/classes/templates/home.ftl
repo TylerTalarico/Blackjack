@@ -8,10 +8,11 @@
 </head>
 <body>
     <h1>Welcome to Blackjack</h1>
-    <h2>There are <span id='numRooms'></span> rooms</h2>
 
-    <form id="createRoom">
-        <input placeholder="Room Name"></input>
+    <form id="createRoom" action="/createRoom" method="post">
+        <input placeholder="Room Name" name="roomName"></input>
+        <input type="number" placeholder="Player Cap" name="playerCap"></input>
+        <input type="number" placeholder="Points to Win" name="pointCap"></input>
         <button type= "submit" id="createRoomBtn">Create</button>
     </form>
 
@@ -26,16 +27,21 @@
              <button type= "submit" id="signInBtn">Sign In</button>
         </form>
     </#if>
+    <ul id="roomList">
+
+    </ul>
 
 
 </body>
 <script >
-    var ws = new WebSocket("ws://localhost:4567/rooms");
-    var numRooms = document.getElementById("numRooms");
+    var ws = new WebSocket("ws://localhost:4567/roomList");
+    var roomList = document.getElementById("roomList");
+
 
 
     ws.onopen = function (event) {
         console.log("Websocket to Rooms is open");
+
     }
 
     ws.onclose = function (event) {
@@ -43,7 +49,16 @@
     }
 
     ws.onmessage = function (event) {
-        numRooms.innerHTML = event.data;
+        processMessage(JSON.parse(event.data));
+        console.log("Received message");
+    }
+
+    function processMessage(data) {
+        let rooms = data;
+        roomList.innerHTML = "";
+        rooms.forEach(element => {
+        roomList.innerHTML += "<li> " + element + "</li>";
+        });
     }
 
 

@@ -5,9 +5,7 @@ import static spark.Spark.*;
 import java.util.Objects;
 import java.util.logging.Logger;
 
-import com.blackjack.controller.GetHomeRoute;
-import com.blackjack.controller.PlayerServices;
-import com.blackjack.controller.PostSignInRoute;
+import com.blackjack.controller.*;
 import com.blackjack.model.Player;
 import com.google.gson.Gson;
 import spark.TemplateEngine;
@@ -60,10 +58,15 @@ public class WebServer {
 
     public static final String SIGNIN_URL = "/signin";
 
+    public static final String ROOM_URL = "/room";
+
+    public static final String CREATE_ROOM_URL = "/createRoom";
+
+
     /**
      * The constructor for the Web Server.
      *
-     * @param templateEngine
+     * @param te
      *    The default {@link TemplateEngine} to render page-level HTML views.
      * @param gson
      *    The Google JSON parser object used to render Ajax responses.
@@ -71,9 +74,9 @@ public class WebServer {
      * @throws NullPointerException
      *    If any of the parameters are {@code null}.
      */
-    public WebServer(Gson gson, TemplateEngine templateEngine, PlayerServices ps) {
+    public WebServer(Gson gson, TemplateEngine te, PlayerServices ps) {
         this.gson = Objects.requireNonNull(gson, "gson cannot be null");
-        this.templateEngine = Objects.requireNonNull(templateEngine, "templateEngine cannot be null");
+        this.templateEngine = Objects.requireNonNull(te, "templateEngine cannot be null");
         this.playerServices = Objects.requireNonNull(ps, "playerServices cannot be null");
 
     }
@@ -128,6 +131,10 @@ public class WebServer {
 
 
         get(HOME_URL, new GetHomeRoute(templateEngine));
+
+        get(ROOM_URL, new GetRoomRoute(templateEngine));
+
+        post(CREATE_ROOM_URL, new PostCreateRoomRoute(templateEngine));
 
         post(SIGNIN_URL, new PostSignInRoute(playerServices));
 

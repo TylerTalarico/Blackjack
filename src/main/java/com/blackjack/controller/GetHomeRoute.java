@@ -1,5 +1,7 @@
 package com.blackjack.controller;
 
+import com.blackjack.application.Room;
+import com.blackjack.application.RoomManager;
 import com.blackjack.model.Player;
 import freemarker.template.Configuration;
 import freemarker.template.Version;
@@ -15,6 +17,7 @@ public class GetHomeRoute implements Route {
     public static String HOME_VIEW_NAME = "home.ftl";
 
     private TemplateEngine templateEngine;
+    private RoomManager roomManager;
 
     public GetHomeRoute(TemplateEngine templateEngine) {
         this.templateEngine = templateEngine;

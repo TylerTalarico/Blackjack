@@ -15,4 +15,15 @@ public class Player {
     public String getName() {
         return this.name;
     }
+
+    public String toString() {
+        return this.name;
+    }
+
+    public boolean equals(Object obj) {
+        if (obj instanceof Player) {
+            return ((Player) obj).getName().equals(this.name);
+        }
+        return false;
+    }
 }
