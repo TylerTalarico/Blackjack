@@ -1,6 +1,15 @@
 package com.blackjack.model;
 
 public class Card {
+
+    public enum Suit {
+        SPADE,
+        HEART,
+        CLUB,
+        DIAMOND
+    }
+
+
     private final int value;
     private final String id;
     private final Suit suit;
@@ -20,12 +29,7 @@ public class Card {
         this.id = id;
     }
 
-    public enum Suit {
-        SPADE,
-        HEART,
-        CLUB,
-        DIAMOND
-    }
+
 
     public int value() {
         return this.value;
