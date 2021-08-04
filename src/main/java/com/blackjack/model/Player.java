@@ -35,4 +35,8 @@ public class Player {
     public void deal(Card card) {
         this.hand.addCard(card);
     }
+
+    public int getHandTotal() {
+        return this.hand.getHandTotal();
+    }
 }

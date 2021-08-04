@@ -6,11 +6,9 @@ import com.blackjack.model.Player;
 import com.blackjack.util.Message;
 import com.blackjack.util.PlayerListMessage;
 import com.google.gson.Gson;
-import com.google.gson.internal.bind.util.ISO8601Utils;
 import org.eclipse.jetty.websocket.api.Session;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 
@@ -70,6 +68,10 @@ public class Room {
 
     public String getRoomName() {
         return this.roomName;
+    }
+
+    public Game.MoveResult makeMove(Game.MoveType move) {
+        return this.game.makeMove(move);
     }
 
     private void updatePlayerList() {
