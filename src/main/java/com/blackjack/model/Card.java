@@ -13,6 +13,7 @@ public class Card {
     private final int value;
     private final String id;
     private final Suit suit;
+    private boolean flipped = true;
 
     public Card(Suit suit, int value) {
         this.value = value;
@@ -43,5 +44,9 @@ public class Card {
         assert (obj instanceof Card);
         Card card = (Card)obj;
         return card.id.equals(this.id) && card.suit == this.suit && card.value == this.value;
+    }
+
+    public void flip() {
+        flipped = !flipped;
     }
 }

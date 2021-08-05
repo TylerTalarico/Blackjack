@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Blackjack</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/playerView.css">
 </head>
 <body>
 
@@ -12,9 +14,13 @@
         Room: ${roomName}
     </h1>
 
-    <ul id="playerList">
+    <div id="content_container">
+        <ul id="playerList"></ul>
 
-    </ul>
+        <div id="game_container"></div>
+    </div>
+
+    
 
 
 
@@ -22,7 +28,9 @@
         var playerName = "${player.name! 'testPlayerName'}";
         var roomName = "${roomName}";
     </script>
-    <script src="/js/roomWS.js"></script>
+    <script type="module" src="/js/roomWS.js"></script>
+    <script type="module" src="/js/playerView.js"></script>
+
 
 
 </body>

@@ -1,9 +1,13 @@
-
-
-
+    import {createPlayerViewElement} from "./playerView.js"
     var ws = new WebSocket("ws://localhost:4567/roomJoin");
     var playerListHTML = document.getElementById("playerList");
+    var gameView = document.getElementById("game_container");
     var players = [];
+
+
+    players.forEach(player => {
+        createPlayerViewElement(player);
+    })
 
     ws.onopen = function (event) {
         console.log("Websocket to Room is open");
@@ -34,8 +38,10 @@
             console.log(players)
 
             playerListHTML.innerHTML = "";
-            players.forEach(element => {
-                playerListHTML.innerHTML += "<li> " + element.name + "</li>";
+            
+            players.forEach(player => {
+                playerListHTML.innerHTML += "<li> " + player.name + "</li>";
+                createPlayerViewElement(player)
             });
         }
     }
