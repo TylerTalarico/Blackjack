@@ -1,0 +1,23 @@
+.player_view {
+    
+
+    width: 200px;
+    height: 150px;
+    margin-bottom: 25px;
+    background: aqua;
+    align-self: flex-end;
+}
+
+.card_view {
+    width: 100%;
+    height: 80%;
+    background: red;
+}
+
+.name_view {
+    text-align: center;
+    padding-top: 10px;
+    width: 100%;
+    height: 20%;
+    background: white;
+}
