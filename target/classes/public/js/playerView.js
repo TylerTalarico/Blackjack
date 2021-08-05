@@ -3,7 +3,7 @@ export function createPlayerViewElement (player) {
 
     const playerView = document.createElement("div")
     playerView.setAttribute("class", "player_view")
-    playerView.setAttribute("id", player.name)
+    playerView.setAttribute("id", "playerId_" + player.name)
 
 
     const cardView = document.createElement("div")

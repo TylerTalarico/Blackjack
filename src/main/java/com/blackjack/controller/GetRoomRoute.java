@@ -27,11 +27,7 @@ public class GetRoomRoute implements Route {
         String roomName = request.queryParams(ROOM_NAME_ATTR);
 
 
-        if(RoomManager.getRoom(roomName) != null && player != null) {
-            RoomManager.addPlayerToRoom(player, roomName);
-        }
-
-        else {
+        if(RoomManager.getRoom(roomName) == null || player == null) {
             response.redirect(WebServer.HOME_URL);
             return null;
         }

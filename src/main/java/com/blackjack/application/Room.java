@@ -4,12 +4,16 @@ package com.blackjack.application;
 import com.blackjack.model.Game;
 import com.blackjack.model.Player;
 import com.blackjack.util.Message;
-import com.blackjack.util.PlayerListMessage;
+import com.blackjack.util.PlayerConnectionMessage;
+import com.blackjack.util.PlayerConnectionMessage.ConnectionType;
+import static com.blackjack.util.PlayerConnectionMessage.ConnectionType.*;
 import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.Session;
 
 import java.util.ArrayList;
 import java.util.List;
+
+
 
 
 public class Room {
@@ -29,26 +33,20 @@ public class Room {
         this.game = new Game(playerList, pointCap);
     }
 
-    public synchronized void addPlayer(Player player) {
-        if (player != null && playerList.size() < playerCap && !playerList.contains(player))
+
+    public synchronized void addUser(Session user, Player player) {
+        if (player != null && playerList.size() < playerCap) {
             playerList.add(player);
+            sessionList.add(user);
+        }
+        updatePlayerList(CONNECT, player);
     }
 
-    public synchronized void addUser(Session user) {
-        assert (user != null && playerList.size() < playerCap);
-        sessionList.add(user);
-        updatePlayerList();
-    }
 
-    public synchronized void removePlayer(Player player) {
-        assert (player != null && playerList.size() < playerCap);
-        playerList.remove(player);
-    }
-
-    public synchronized void removeUser(Session user) {
-        assert (user != null && playerList.size() < playerCap);
+    public synchronized void removeUser(Session user, Player player) {
         sessionList.remove(user);
-        updatePlayerList();
+        playerList.remove(player);
+        updatePlayerList(DISCONNECT, player);
     }
 
     public List<Player> getPlayerList() {
@@ -74,12 +72,12 @@ public class Room {
         return this.game.makeMove(move);
     }
 
-    private void updatePlayerList() {
-        PlayerListMessage plm = new PlayerListMessage(RoomWebSocketHandler.PLAYER_CONNECTION_MSG, getPlayerList());
+    private void updatePlayerList(ConnectionType ct, Player player) {
+        PlayerConnectionMessage pcm = new PlayerConnectionMessage(ct, player);
         for (Session s: sessionList) {
             try {
-                s.getRemote().sendString(gson.toJson(plm));
-                System.out.println(gson.toJson(plm));
+                s.getRemote().sendString(gson.toJson(pcm));
+                System.out.println(gson.toJson(pcm));
                 System.out.println("Player List in Room " + roomName + " Updated");
             }catch (Exception e) {
                 e.printStackTrace();

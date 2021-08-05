@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Blackjack</title>
     <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/playerView.css">
+    <link rel="playerView stylesheet" href="../css/playerView.css">
 </head>
 <body>
 
@@ -15,7 +15,9 @@
     </h1>
 
     <div id="content_container">
-        <ul id="playerList"></ul>
+        <ul id="playerList">
+
+        </ul>
 
         <div id="game_container"></div>
     </div>
@@ -28,8 +30,8 @@
         var playerName = "${player.name! 'testPlayerName'}";
         var roomName = "${roomName}";
     </script>
-    <script type="module" src="/js/roomWS.js"></script>
-    <script type="module" src="/js/playerView.js"></script>
+    <script type="module" src="../js/roomWS.js"></script>
+    <script type="module" src="../js/playerView.js"></script>
 
 
 

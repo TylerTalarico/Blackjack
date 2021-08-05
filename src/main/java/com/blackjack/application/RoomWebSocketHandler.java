@@ -15,7 +15,6 @@ public class RoomWebSocketHandler {
 
     private final String ROOM_NAME_REQUEST = "getRoomName";
     public static final String PLAYER_CLOSE_MSG = "playerClose";
-    public static final String PLAYER_CONNECTION_MSG = "playerConnection";
 
 
     private final Gson gson = new Gson();
@@ -44,23 +43,24 @@ public class RoomWebSocketHandler {
 
             case ROOM_NAME_REQUEST:
 
-                String roomName = msg.contents();
-                RoomManager.addUserToRoom(user, roomName);
+                String[] args1 = msg.contents().split(" ");
+                String roomJoining = args1[0];
+                String playerNameJoining = args1[1];
+                Player playerJoining = PlayerServices.getPlayer(playerNameJoining);
+
+                RoomManager.addUserToRoom(user, playerJoining, roomJoining);
                 System.out.println("Room Request Received");
                 break;
 
 
             case PLAYER_CLOSE_MSG:
 
-                String[] arguments = msg.contents().split(" ");
-                String roomLeaving = arguments[0];
-                String playerName = arguments[1];
-                Player playerLeaving = PlayerServices.getPlayer(playerName);
+                String[] args2 = msg.contents().split(" ");
+                String roomLeaving = args2[0];
+                String playerNameLeaving = args2[1];
+                Player playerLeaving = PlayerServices.getPlayer(playerNameLeaving);
 
-                System.out.println(message);
-
-                RoomManager.removePlayerFromRoom(playerLeaving, roomLeaving);
-                RoomManager.removeUserFromRoom(user, roomLeaving);
+                RoomManager.removeUserFromRoom(user, playerLeaving, roomLeaving);
             default:
                 break;
 

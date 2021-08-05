@@ -13,7 +13,7 @@
         console.log("Websocket to Room is open");
         let joinRequest = {
                     messageType: "getRoomName",
-                    content: roomName
+                    content: roomName + " " + playerName
                 }
 
         ws.send(JSON.stringify(joinRequest));
@@ -32,17 +32,17 @@
 
     function processMessage(data) {
         let message = data.messageType;
-        if (message === "playerConnection") {
+        if (message === "CONNECT") {
             console.log("New player joined room");
-            players = data.players;
-            console.log(players)
+            let playerJoining = data.player;
+            createPlayerViewElement(playerJoining)
 
-            playerListHTML.innerHTML = "";
-            
-            players.forEach(player => {
-                playerListHTML.innerHTML += "<li> " + player.name + "</li>";
-                createPlayerViewElement(player)
-            });
+        }
+        else if (message === "DISCONNECT") {
+            console.log("Player left")
+            let playerLeaving = data.player
+            let elem = document.getElementById("playerId_" + playerLeaving.name)
+            elem.remove()
         }
     }
 
@@ -51,6 +51,7 @@
             messageType: "playerClose",
             content: roomName + " " + playerName
         }
+
 
         ws.send(JSON.stringify(closeRequest));
     }

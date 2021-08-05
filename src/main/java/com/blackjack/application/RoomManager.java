@@ -2,7 +2,6 @@ package com.blackjack.application;
 
 import com.blackjack.model.Player;
 import com.blackjack.util.Message;
-import com.blackjack.util.PlayerListMessage;
 import org.eclipse.jetty.websocket.api.Session;
 
 import java.util.Set;
@@ -26,33 +25,20 @@ public class RoomManager {
 
     }
 
-    public static void addPlayerToRoom(Player player, String roomName) {
+
+    public static void addUserToRoom(Session user, Player player, String roomName) {
         Room room = roomList.get(roomName);
         if (room != null) {
-            room.addPlayer(player);
-        }
-
-    }
-
-    public static void addUserToRoom(Session user, String roomName) {
-        Room room = roomList.get(roomName);
-        if (room != null) {
-            room.addUser(user);
+            room.addUser(user, player);
             System.out.println("Player added to room " + roomName);
         }
     }
 
-    public static void removePlayerFromRoom(Player player, String roomName) {
-        Room room = roomList.get(roomName);
-        if (room != null) {
-            room.removePlayer(player);
-        }
-    }
 
-    public static void removeUserFromRoom(Session user, String roomName) {
+    public static void removeUserFromRoom(Session user, Player player, String roomName) {
         Room room = roomList.get(roomName);
         if (room != null) {
-            room.removeUser(user);
+            room.removeUser(user, player);
         }
     }
 
