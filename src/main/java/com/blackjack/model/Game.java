@@ -1,8 +1,15 @@
 package com.blackjack.model;
 
+import com.blackjack.util.GameUpdate;
+import com.blackjack.util.InitialDealUpdate;
+import com.google.gson.Gson;
+import org.eclipse.jetty.websocket.api.Session;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
-import java.util.Stack;
+import java.util.concurrent.TimeUnit;
 
 public class Game {
 
@@ -16,7 +23,9 @@ public class Game {
         NOT_BUST
     }
 
-    private final ArrayList<Player> playerList;
+    private final Gson gson = new Gson();
+
+    private final Collection<Player> playerList;
     private final Iterator<Player> playerIterator;
     private Player activePlayer;
 
@@ -25,9 +34,10 @@ public class Game {
     private int pointCap = 0;
     private Player winner = null;
     private boolean isStarted = false;
+    private boolean currentRoundOver = false;
 
 
-    public Game(ArrayList<Player> list, int pointCap) {
+    public Game(Collection<Player> list, int pointCap) {
 
         this.playerList = list;
         this.playerIterator = this.playerList.iterator();
@@ -41,27 +51,43 @@ public class Game {
         return isStarted;
     }
 
-    public void start() {
+    public void start(ArrayList<Session> sessions) {
         this.isStarted = true;
+        this.currentRoundOver = false;
+        deal(sessions);
     }
 
-    private void deal() {
+    private void deal(ArrayList<Session> sessions) {
         for (int i = 0; i < 2; i++) {
             for (Player player: this.playerList) {
-                player.deal(deck.drawCard());
+                Card nextCard = deck.drawCard();
+                player.deal(nextCard);
+                try {
+                    for(Session s: sessions) {
+                        s.getRemote().sendString(gson.toJson(new InitialDealUpdate(player, nextCard)));
+                    }
+                    TimeUnit.MILLISECONDS.sleep(200);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
 
     public MoveResult makeMove(MoveType move) {
+
+        MoveResult result;
         switch(move) {
             case HIT:
-                return hit();
+                result = hit();
 
             default:
-                return stand();
+                result = stand();
 
         }
+        if (!playerIterator.hasNext())
+            this.currentRoundOver = true;
+        return result;
     }
 
     private MoveResult hit() {
@@ -92,6 +118,10 @@ public class Game {
             }
         }
         return roundWinner;
+    }
+
+    public boolean isCurrentRoundOver() {
+        return currentRoundOver;
     }
 
 

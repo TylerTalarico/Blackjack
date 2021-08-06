@@ -7,6 +7,7 @@ public class PlayerConnectionMessage {
     public enum ConnectionType {
         CONNECT,
         DISCONNECT
+
     }
 
     private final ConnectionType messageType;

@@ -19,7 +19,9 @@ public class Deck {
             }
         }
 
-        return new Deck(cards);
+        Deck deck = new Deck(cards);
+        deck.shuffle();
+        return deck;
 
     }
 
@@ -35,7 +37,7 @@ public class Deck {
         Stack<Card> shuffledCards = new Stack<>();
         int limit = cards.size();
         for (int i = 0; i < limit; i++) {
-            shuffledCards.push(cards.remove((int)(Math.random() * (cards.size() + 1))));
+            shuffledCards.push(cards.remove((int)(Math.random() * (cards.size()))));
         }
         this.cards.addAll(shuffledCards);
     }

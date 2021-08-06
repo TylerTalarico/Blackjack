@@ -30,7 +30,6 @@ public class RoomManager {
         Room room = roomList.get(roomName);
         if (room != null) {
             room.addUser(user, player);
-            System.out.println("Player added to room " + roomName);
         }
     }
 
@@ -54,4 +53,10 @@ public class RoomManager {
     }
 
 
+    public static void startGameInRoom(String roomStarting, Player playerStarting) {
+        Room room = roomList.get(roomStarting);
+        if (room != null && room.getHost().equals(playerStarting)) {
+            room.startGame();
+        }
+    }
 }

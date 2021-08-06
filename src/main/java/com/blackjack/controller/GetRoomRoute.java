@@ -1,5 +1,6 @@
 package com.blackjack.controller;
 
+import com.blackjack.application.Room;
 import com.blackjack.application.RoomManager;
 import com.blackjack.application.WebServer;
 import com.blackjack.model.Player;
@@ -10,6 +11,7 @@ import java.util.HashMap;
 public class GetRoomRoute implements Route {
 
     public static String ROOM_NAME_ATTR = "roomName";
+    public static String HOST_ATTR = "hostPlayer";
 
     private final TemplateEngine templateEngine;
 
@@ -26,12 +28,15 @@ public class GetRoomRoute implements Route {
         Player player = httpSession.attribute(GetHomeRoute.PLAYER_ATTR);
         String roomName = request.queryParams(ROOM_NAME_ATTR);
 
+        Room room = RoomManager.getRoom(roomName);
 
-        if(RoomManager.getRoom(roomName) == null || player == null) {
+
+        if(room == null || player == null) {
             response.redirect(WebServer.HOME_URL);
             return null;
         }
 
+        vm.put(HOST_ATTR, room.getHost());
         vm.put(ROOM_NAME_ATTR, roomName);
         vm.put(GetHomeRoute.PLAYER_ATTR, player);
 

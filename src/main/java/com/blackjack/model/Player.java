@@ -21,11 +21,8 @@ public class Player {
         return this.name;
     }
 
-    public boolean equals(Object obj) {
-        if (obj instanceof Player) {
-            return ((Player) obj).getName().equals(this.name);
-        }
-        return false;
+    public boolean equals(Player player) {
+        return player.getName().equals(this.name);
     }
 
     public boolean isBust() {

@@ -14,6 +14,7 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 public class RoomWebSocketHandler {
 
     private final String ROOM_NAME_REQUEST = "getRoomName";
+    private final String START_GAME_REQUEST = "startGame";
     public static final String PLAYER_CLOSE_MSG = "playerClose";
 
 
@@ -61,6 +62,16 @@ public class RoomWebSocketHandler {
                 Player playerLeaving = PlayerServices.getPlayer(playerNameLeaving);
 
                 RoomManager.removeUserFromRoom(user, playerLeaving, roomLeaving);
+
+            case START_GAME_REQUEST:
+
+                String[] args3 = msg.contents().split(" ");
+                String roomStarting = args3[0];
+                String playerNameStarting = args3[1];
+
+                Player playerStarting = PlayerServices.getPlayer(playerNameStarting);
+                if (playerStarting != null)
+                    RoomManager.startGameInRoom(roomStarting, playerStarting);
             default:
                 break;
 

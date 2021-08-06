@@ -22,16 +22,24 @@
         <div id="game_container"></div>
     </div>
 
-    
-
+    <button hidden disabled id="start_btn" >Start Game</button>
 
 
     <script>
-        var playerName = "${player.name! 'testPlayerName'}";
-        var roomName = "${roomName}";
+
+        window.playerName = "${player.name! 'testPlayerName'}"
+        window.roomName = "${roomName}"
+        window.hostName = "${hostPlayer.name!}"
+
+        if (playerName === hostName) {
+            document.getElementById("start_btn").removeAttribute("hidden")
+            document.getElementById("start_btn").removeAttribute("disabled")
+        }
+        
     </script>
     <script type="module" src="../js/roomWS.js"></script>
     <script type="module" src="../js/playerView.js"></script>
+    
 
 
 
