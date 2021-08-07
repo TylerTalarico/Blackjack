@@ -74,6 +74,27 @@
 
 
         }
+
+        else if (message === "CLEAR_HAND") {
+            players.forEach(player => {
+                elem = document.getElementById(player.name + "_card_view")
+                if (elem !== null)
+                    elem.innerHTML = "";
+            })
+        }
+
+        else if (message === "START_ROUND") {
+            if (data.activePlayer.name === window.playerName) {
+                document.getElementById("hit_btn").disabled = false;
+                document.getElementById("stand_btn").disabled = false;
+            }
+            else {
+                document.getElementById("hit_btn").disabled = true;
+                document.getElementById("stand_btn").disabled = true;
+            }
+
+            console.log(data.activePlayer.name)
+        }
     }
 
     window.onbeforeunload = function() {

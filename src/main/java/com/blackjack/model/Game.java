@@ -15,8 +15,7 @@ public class Game {
 
     public enum ActionType {
         HIT,
-        STAND,
-        DEAL
+        STAND
     }
 
     public enum MoveResult {
@@ -126,6 +125,8 @@ public class Game {
     public boolean isCurrentRoundOver() {
         return currentRoundOver;
     }
+
+    public Player getActivePlayer() { return this.activePlayer; }
 
 
 }

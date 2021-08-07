@@ -41,11 +41,6 @@ public class RoomManager {
         }
     }
 
-    public static void updateRoomGameState(String roomName, Message msg) {
-        Room room = roomList.get(roomName);
-        room.updateGameState(msg);
-    }
-
 
     public static Set<String> getRoomNames() {
         return roomList.keySet();

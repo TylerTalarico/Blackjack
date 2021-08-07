@@ -56,22 +56,27 @@ public class Room {
 
         game.startRound();
 
+        for (Session session: sessionList) {
+            updateGameState(new ClearHandUpdate());
+        }
+
         for (int i = 0; i < 2; i++) {
             for (Player p: playerList) {
                 DealUpdate du = game.deal(p);
 
+                updateGameState(du);
                 try {
-
-                for (Session s: sessionList) {
-
-                        s.getRemote().sendString(gson.toJson(du));
-                }
-                TimeUnit.MILLISECONDS.sleep(300);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    TimeUnit.MILLISECONDS.sleep(300);
+                }catch (InterruptedException ie) {
+                    ie.printStackTrace();
                 }
             }
         }
+
+        updateGameState(new StartRoundUpdate(game.getActivePlayer()));
+        System.out.println("Player Starting the Round: " + game.getActivePlayer().getName());
+
+
     }
 
     public Collection<Player> getPlayerList() {
@@ -79,10 +84,10 @@ public class Room {
     }
 
 
-    public void updateGameState(Message msg) {
+    private void updateGameState(GameUpdate gu) {
         for (Session s: sessionList) {
             try {
-                s.getRemote().sendString(gson.toJson(msg));
+                s.getRemote().sendString(gson.toJson(gu));
             } catch (Exception e) {
                 e.printStackTrace();
             }
