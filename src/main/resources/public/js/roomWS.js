@@ -10,6 +10,10 @@
     var players = [];
 
     function startGame() {
+
+        startButton.hidden = true;
+        startButton.disabled = true;
+
         let startGameRequest = {
             messageType: "startGame",
             content: window.roomName + " " + window.playerName
@@ -69,6 +73,13 @@
 
 
 
+        }
+
+        else if (message === "CLEAR_HAND") {
+            players.forEach(player => {
+                elem = document.getElementById(player.name + "_card_view")
+                elem.innerHTML = "";
+            })
         }
     }
 

@@ -53,10 +53,10 @@ public class RoomManager {
     }
 
 
-    public static void startGameInRoom(String roomStarting, Player playerStarting) {
+    public static void startRoundInRoom(String roomStarting, Player playerStarting) {
         Room room = roomList.get(roomStarting);
         if (room != null && room.getHost().equals(playerStarting)) {
-            room.startGame();
+            room.startRound();
         }
     }
 }

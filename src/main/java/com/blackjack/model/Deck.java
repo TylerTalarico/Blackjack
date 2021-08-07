@@ -33,7 +33,7 @@ public class Deck {
         this.cards = cards;
     }
 
-    private void shuffle() {
+    public void shuffle() {
         Stack<Card> shuffledCards = new Stack<>();
         int limit = cards.size();
         for (int i = 0; i < limit; i++) {

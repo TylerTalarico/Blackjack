@@ -3,21 +3,16 @@ package com.blackjack.application;
 
 import com.blackjack.model.Game;
 import com.blackjack.model.Player;
-import com.blackjack.util.Message;
-import com.blackjack.util.PlayerConnectionMessage;
+import com.blackjack.util.*;
 import com.blackjack.util.PlayerConnectionMessage.ConnectionType;
 import static com.blackjack.util.PlayerConnectionMessage.ConnectionType.*;
 
-import com.blackjack.util.PlayerListMessage;
 import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.Session;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-
-
+import java.util.concurrent.TimeUnit;
 
 
 public class Room {
@@ -57,9 +52,26 @@ public class Room {
         updatePlayerList(DISCONNECT, player);
     }
 
-    public void startGame() {
-        this.roomIsOpen = false;
-        game.start(sessionList);
+    public void startRound() {
+
+        game.startRound();
+
+        for (int i = 0; i < 2; i++) {
+            for (Player p: playerList) {
+                DealUpdate du = game.deal(p);
+
+                try {
+
+                for (Session s: sessionList) {
+
+                        s.getRemote().sendString(gson.toJson(du));
+                }
+                TimeUnit.MILLISECONDS.sleep(300);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     public Collection<Player> getPlayerList() {
@@ -85,8 +97,8 @@ public class Room {
         return this.host;
     }
 
-    public Game.MoveResult makeMove(Game.MoveType move) {
-        return this.game.makeMove(move);
+    public GameUpdate makeMove(Game.ActionType move) {
+        return this.game.performAction(move);
     }
 
     private void updatePlayerList() {

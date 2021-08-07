@@ -1,21 +1,22 @@
 package com.blackjack.model;
 
+import com.blackjack.util.DealUpdate;
 import com.blackjack.util.GameUpdate;
-import com.blackjack.util.InitialDealUpdate;
+import com.blackjack.util.HitUpdate;
+import com.blackjack.util.StandUpdate;
 import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.Session;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.concurrent.TimeUnit;
 
 public class Game {
 
-    public enum MoveType {
+    public enum ActionType {
         HIT,
-        STAND
+        STAND,
+        DEAL
     }
 
     public enum MoveResult {
@@ -51,32 +52,26 @@ public class Game {
         return isStarted;
     }
 
-    public void start(ArrayList<Session> sessions) {
-        this.isStarted = true;
-        this.currentRoundOver = false;
-        deal(sessions);
+
+    public void startRound() {
+
+        if (!this.isStarted)
+            this.isStarted = true;
+
+        if (!this.currentRoundOver)
+            return;
+
+        this.deck = Deck.newDeck();
+        for (Player player: playerList)
+            player.clearHand();
+
     }
 
-    private void deal(ArrayList<Session> sessions) {
-        for (int i = 0; i < 2; i++) {
-            for (Player player: this.playerList) {
-                Card nextCard = deck.drawCard();
-                player.deal(nextCard);
-                try {
-                    for(Session s: sessions) {
-                        s.getRemote().sendString(gson.toJson(new InitialDealUpdate(player, nextCard)));
-                    }
-                    TimeUnit.MILLISECONDS.sleep(200);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
 
-    public MoveResult makeMove(MoveType move) {
 
-        MoveResult result;
+    public GameUpdate performAction(ActionType move) {
+
+        GameUpdate result;
         switch(move) {
             case HIT:
                 result = hit();
@@ -90,20 +85,28 @@ public class Game {
         return result;
     }
 
-    private MoveResult hit() {
-        activePlayer.deal(this.deck.drawCard());
+    private HitUpdate hit() {
+        Card cardDrawn = deck.drawCard();
+        activePlayer.deal(cardDrawn);
 
         if (activePlayer.isBust()) {
+            Player bustedPlayer = activePlayer;
             this.activePlayer = playerIterator.next();
-            return MoveResult.BUST;
+            return new HitUpdate(bustedPlayer, activePlayer, cardDrawn, true);
         }
 
-        return MoveResult.NOT_BUST;
+        return new HitUpdate(activePlayer, activePlayer, cardDrawn, true);
     }
 
-    public MoveResult stand() {
+    private StandUpdate stand() {
         this.activePlayer = playerIterator.next();
-        return MoveResult.NOT_BUST;
+        return new StandUpdate(activePlayer);
+    }
+
+    public DealUpdate deal(Player player) {
+        Card nextCard = deck.drawCard();
+        player.deal(nextCard);
+        return new DealUpdate(player, nextCard);
     }
 
     public Player getRoundWinner() {

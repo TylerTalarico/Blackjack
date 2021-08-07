@@ -10,6 +10,10 @@
     var players = [];
 
     function startGame() {
+
+        startButton.hidden = true;
+        startButton.disabled = true;
+
         let startGameRequest = {
             messageType: "startGame",
             content: window.roomName + " " + window.playerName

@@ -71,7 +71,7 @@ public class RoomWebSocketHandler {
 
                 Player playerStarting = PlayerServices.getPlayer(playerNameStarting);
                 if (playerStarting != null)
-                    RoomManager.startGameInRoom(roomStarting, playerStarting);
+                    RoomManager.startRoundInRoom(roomStarting, playerStarting);
             default:
                 break;
 

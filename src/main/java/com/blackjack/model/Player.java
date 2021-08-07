@@ -6,7 +6,7 @@ public class Player {
 
     private final String name;
     private int pointCount = 0;
-    private final Hand hand = new Hand();
+    private Hand hand = new Hand();
 
 
     public Player (String name){
@@ -35,5 +35,9 @@ public class Player {
 
     public int getHandTotal() {
         return this.hand.getHandTotal();
+    }
+
+    public void clearHand() {
+        this.hand = new Hand();
     }
 }
