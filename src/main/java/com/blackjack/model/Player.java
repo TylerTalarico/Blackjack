@@ -33,9 +33,13 @@ public class Player {
         this.hand.addCard(card);
     }
 
+    public void givePoint() { this.pointCount++; }
+
     public int getHandTotal() {
         return this.hand.getHandTotal();
     }
+
+    public int getPointCount() { return this.pointCount; }
 
     public void clearHand() {
         this.hand = new Hand();

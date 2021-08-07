@@ -32,7 +32,7 @@ public class Game {
 
     private Deck deck;
     private int pointCap = 0;
-    private Player winner = null;
+    private Player gameWinner = null;
     private boolean isStarted = false;
     private boolean currentRoundOver = false;
 
@@ -63,6 +63,7 @@ public class Game {
         this.deck = Deck.newDeck();
         for (Player player: playerList)
             player.clearHand();
+        this.currentRoundOver = false;
 
     }
 
@@ -110,7 +111,7 @@ public class Game {
 
     public Player getRoundWinner() {
         int highestHand = 0;
-        Player roundWinner = null;
+        Player roundWinner = activePlayer;
         if (playerIterator.hasNext())
             return null;
         for (Player player: playerList) {
@@ -118,6 +119,11 @@ public class Game {
                 highestHand = player.getHandTotal();
                 roundWinner = player;
             }
+        }
+        roundWinner.givePoint();
+
+        if (roundWinner.getPointCount() == pointCap) {
+            this.gameWinner = roundWinner;
         }
         return roundWinner;
     }
@@ -127,6 +133,10 @@ public class Game {
     }
 
     public Player getActivePlayer() { return this.activePlayer; }
+
+    public Player getGameWinner() {
+        return this.gameWinner;
+    }
 
 
 }

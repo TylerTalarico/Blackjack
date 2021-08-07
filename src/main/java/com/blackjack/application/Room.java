@@ -79,6 +79,33 @@ public class Room {
 
     }
 
+    public void performAction(Game.ActionType action) {
+        GameUpdate playerMove = game.performAction(action);
+
+        updateGameState(playerMove);
+
+        if (game.isCurrentRoundOver()) {
+            updateGameState(new RoundOverUpdate(game.getRoundWinner()));
+
+            try {
+                TimeUnit.MILLISECONDS.sleep(5000);
+            }catch (InterruptedException ie) {
+                ie.printStackTrace();
+            }
+        }
+
+        if (game.getGameWinner() != null) {
+            updateGameState(new GameOverUpdate(game.getGameWinner()));
+        }
+        else {
+            startRound();
+        }
+
+
+
+
+    }
+
     public Collection<Player> getPlayerList() {
         return this.playerList;
     }

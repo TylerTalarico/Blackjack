@@ -19,7 +19,12 @@
 
         </ul>
 
-        <div id="game_container"></div>
+        <div id="game_container">
+            <div id="action_bar">
+                <button disabled id="hit_btn">Hit</button>
+                <button disabled id="stand_btn">Stand</button>
+            </div>
+        </div>
     </div>
 
     <button hidden disabled id="start_btn" >Start Game</button>
