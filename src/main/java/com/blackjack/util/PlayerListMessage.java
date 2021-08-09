@@ -8,7 +8,7 @@ import java.util.Collection;
 
 public class PlayerListMessage {
 
-    private String messageType = "playerList";
+    private String messageType = "PLAYER_LIST";
     private Collection<Player> players;
 
     public PlayerListMessage(Collection<Player> players) {

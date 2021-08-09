@@ -8,14 +8,14 @@ public class HitUpdate extends GameUpdate {
     private static final String messageType = "HIT";
     private final Player activePlayer;
     private final Player newActivePlayer;
-    private final Card cardDrawn;
+    private final Card card;
     private final boolean bust;
 
-    public HitUpdate(Player activePlayer, Player newActivePlayer, Card cardDrawn, boolean bust) {
+    public HitUpdate(Player activePlayer, Player newActivePlayer, Card card, boolean bust) {
         super(messageType);
         this.activePlayer = activePlayer;
         this.newActivePlayer = newActivePlayer;
-        this.cardDrawn = cardDrawn;
+        this.card = card;
         this.bust = bust;
     }
 }

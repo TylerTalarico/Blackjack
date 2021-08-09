@@ -8,18 +8,19 @@ import com.blackjack.util.PlayerConnectionMessage.ConnectionType;
 import static com.blackjack.util.PlayerConnectionMessage.ConnectionType.*;
 
 import com.google.gson.Gson;
+import org.eclipse.jetty.util.ConcurrentHashSet;
 import org.eclipse.jetty.websocket.api.Session;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 
 public class Room {
 
 
-    private final ArrayList<Player> playerList = new ArrayList<>();
-    private final ArrayList<Session> sessionList = new ArrayList<>();
+    private final ArrayBlockingQueue<Player> playerList;
+    private final ConcurrentHashSet<Session> sessionList = new ConcurrentHashSet<>();
     private Player host;
     private final int playerCap;
     private final String roomName;
@@ -29,6 +30,7 @@ public class Room {
 
     public Room(Player host, int playerCap, int pointCap, String roomName) {
         this.playerCap = playerCap;
+        this.playerList = new ArrayBlockingQueue<>(playerCap, true);
         this.roomName = roomName;
         this.host = host;
         this.playerList.add(host);
@@ -49,10 +51,13 @@ public class Room {
     public synchronized void removeUser(Session user, Player player) {
         sessionList.remove(user);
         playerList.remove(player);
+        System.out.println(player + " removed from room");
         updatePlayerList(DISCONNECT, player);
     }
 
     public void startRound() {
+
+        System.out.println("Player List: " + playerList);
 
         game.startRound();
 
@@ -79,7 +84,11 @@ public class Room {
 
     }
 
-    public void performAction(Game.ActionType action) {
+    public void performAction(Game.ActionType action, Player playerSubmitting) {
+
+        if (!playerSubmitting.equals(game.getActivePlayer()))
+            return;
+
         GameUpdate playerMove = game.performAction(action);
 
         updateGameState(playerMove);
@@ -92,16 +101,14 @@ public class Room {
             }catch (InterruptedException ie) {
                 ie.printStackTrace();
             }
-        }
 
-        if (game.getGameWinner() != null) {
-            updateGameState(new GameOverUpdate(game.getGameWinner()));
+            if (game.getGameWinner() != null) {
+                updateGameState(new GameOverUpdate(game.getGameWinner()));
+            }
+            else {
+                startRound();
+            }
         }
-        else {
-            startRound();
-        }
-
-
 
 
     }

@@ -5,7 +5,12 @@
     var gameView = document.getElementById("game_container");
 
     var startButton = document.getElementById("start_btn");
+    var hitButton = document.getElementById("hit_btn");
+    var standButton = document.getElementById("stand_btn");
+
     startButton.addEventListener("click", startGame)
+    hitButton.addEventListener("click", hit)
+    standButton.addEventListener("click", stand)
 
     var players = [];
 
@@ -15,11 +20,34 @@
         startButton.disabled = true;
 
         let startGameRequest = {
-            messageType: "startGame",
+            messageType: "START_GAME",
             content: window.roomName + " " + window.playerName
         }
 
         ws.send(JSON.stringify(startGameRequest))
+    }
+
+    function hit() {
+
+        disableActionButtons();
+
+        let hitRequest = {
+            messageType: "SUBMIT_MOVE",
+            content: window.roomName + " " + window.playerName + " HIT"
+        }
+        console.log(hitRequest.content)
+        ws.send(JSON.stringify(hitRequest))
+    }
+
+    function stand() {
+
+        disableActionButtons();
+
+        let standRequest = {
+            messageType: "SUBMIT_MOVE",
+            content: window.roomName + " " + window.playerName + " STAND"
+        }
+        ws.send(JSON.stringify(standRequest))
     }
 
 
@@ -30,7 +58,7 @@
     ws.onopen = function (event) {
         console.log("Websocket to Room is open");
         let joinRequest = {
-            messageType: "getRoomName",
+            messageType: "GET_ROOM_NAME",
             content: window.roomName + " " + window.playerName
         }
         ws.send(JSON.stringify(joinRequest))
@@ -49,9 +77,9 @@
 
     function processMessage(data) {
         let message = data.messageType;
-        if (message === "playerList") {
+        if (message === "PLAYER_LIST") {
             console.log("New player joined room");
-            let players = data.players
+            players = data.players
             
             players.forEach(player => {
                 createPlayerViewElement(player)
@@ -64,6 +92,7 @@
             let playerLeaving = data.player
             let elem = document.getElementById("playerId_" + playerLeaving.name)
             elem.remove()
+            players.remove(playerLeaving);
         }
         else if (message === "INITIAL_DEAL") {
             let card = data.card
@@ -77,29 +106,60 @@
 
         else if (message === "CLEAR_HAND") {
             players.forEach(player => {
-                elem = document.getElementById(player.name + "_card_view")
+                let elem = document.getElementById(player.name + "_card_view")
                 if (elem !== null)
                     elem.innerHTML = "";
             })
+            console.log(players)
         }
 
         else if (message === "START_ROUND") {
             if (data.activePlayer.name === window.playerName) {
-                document.getElementById("hit_btn").disabled = false;
-                document.getElementById("stand_btn").disabled = false;
+                enableActionButtons();
             }
             else {
-                document.getElementById("hit_btn").disabled = true;
-                document.getElementById("stand_btn").disabled = true;
+                 disableActionButtons();
             }
 
             console.log(data.activePlayer.name)
         }
+
+        else if (message === "HIT") {
+            addCardToPlayerView(data.activePlayer, data.card)
+
+            if (window.playerName === data.newActivePlayer.name) {
+                enableActionButtons();
+            }
+        }
+
+        else if (message === "STAND") {
+            if (window.playerName === data.newActivePlayer.name) {
+                enableActionButtons();
+            }
+        }
+
+        else if (message === "ROUND_OVER") {
+            console.log(data.winner.name + " Won the Round!")
+        }
+
+        else if (message === "GAME_OVER") {
+                    console.log(data.winner.name + " Won the Game!")
+                }
+    }
+
+    function enableActionButtons() {
+        hitButton.disabled = false;
+        standButton.disabled = false;
+    }
+
+    function disableActionButtons() {
+        hitButton.disabled = true;
+        standButton.disabled = true;
     }
 
     window.onbeforeunload = function() {
         let closeRequest = {
-            messageType: "playerClose",
+            messageType: "PLAYER_CLOSE",
             content: roomName + " " + playerName
         }
 

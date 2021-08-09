@@ -1,5 +1,6 @@
 package com.blackjack.application;
 
+import com.blackjack.model.Game;
 import com.blackjack.model.Player;
 import com.blackjack.util.Message;
 import org.eclipse.jetty.websocket.api.Session;
@@ -9,7 +10,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class RoomManager {
 
-    private final static String PLAYER_CONNECTION_MSG = "playerConnection";
     private static final ConcurrentHashMap<String, Room> roomList = new ConcurrentHashMap<>();
 
 
@@ -52,6 +52,13 @@ public class RoomManager {
         Room room = roomList.get(roomStarting);
         if (room != null && room.getHost().equals(playerStarting)) {
             room.startRound();
+        }
+    }
+
+    public static void submitMoveToRoom(String roomForMoveSubmit, Player playerSubmittingMove, Game.ActionType moveType) {
+        Room room = roomList.get(roomForMoveSubmit);
+        if (room != null) {
+            room.performAction(moveType, playerSubmittingMove);
         }
     }
 }

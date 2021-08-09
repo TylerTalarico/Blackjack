@@ -1,6 +1,7 @@
 package com.blackjack.application;
 
 import com.blackjack.controller.PlayerServices;
+import com.blackjack.model.Game;
 import com.blackjack.model.Player;
 import com.blackjack.util.Message;
 import com.google.gson.Gson;
@@ -13,9 +14,10 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 @WebSocket
 public class RoomWebSocketHandler {
 
-    private final String ROOM_NAME_REQUEST = "getRoomName";
-    private final String START_GAME_REQUEST = "startGame";
-    public static final String PLAYER_CLOSE_MSG = "playerClose";
+    private final String ROOM_NAME_REQUEST = "GET_ROOM_NAME";
+    private final String START_GAME_REQUEST = "START_GAME";
+    public static final String PLAYER_CLOSE_MSG = "PLAYER_CLOSE";
+    private final String SUBMIT_MOVE_REQUEST = "SUBMIT_MOVE";
 
 
     private final Gson gson = new Gson();
@@ -39,14 +41,14 @@ public class RoomWebSocketHandler {
         System.out.println(message);
         Message msg = gson.fromJson(message, Message.class);
         String messageType = msg.messageType();
+        String[] messageContents = parseMessageContents(msg.contents());
 
         switch (messageType) {
 
             case ROOM_NAME_REQUEST:
 
-                String[] args1 = msg.contents().split(" ");
-                String roomJoining = args1[0];
-                String playerNameJoining = args1[1];
+                String roomJoining = messageContents[0];
+                String playerNameJoining = messageContents[1];
                 Player playerJoining = PlayerServices.getPlayer(playerNameJoining);
 
                 RoomManager.addUserToRoom(user, playerJoining, roomJoining);
@@ -54,27 +56,55 @@ public class RoomWebSocketHandler {
                 break;
 
 
+
             case PLAYER_CLOSE_MSG:
 
-                String[] args2 = msg.contents().split(" ");
-                String roomLeaving = args2[0];
-                String playerNameLeaving = args2[1];
+                String roomLeaving = messageContents[0];
+                String playerNameLeaving = messageContents[1];
                 Player playerLeaving = PlayerServices.getPlayer(playerNameLeaving);
 
                 RoomManager.removeUserFromRoom(user, playerLeaving, roomLeaving);
+                break;
 
             case START_GAME_REQUEST:
 
-                String[] args3 = msg.contents().split(" ");
-                String roomStarting = args3[0];
-                String playerNameStarting = args3[1];
+                String roomStarting = messageContents[0];
+                String playerNameStarting = messageContents[1];
 
                 Player playerStarting = PlayerServices.getPlayer(playerNameStarting);
                 if (playerStarting != null)
                     RoomManager.startRoundInRoom(roomStarting, playerStarting);
+                break;
+
+            case SUBMIT_MOVE_REQUEST:
+
+                String roomForMoveSubmit = messageContents[0];
+                String playerNameSubmittingMove = messageContents[1];
+                Game.ActionType moveType = parseAction(messageContents[2]);
+
+
+
+                Player playerSubmittingMove = PlayerServices.getPlayer(playerNameSubmittingMove);
+                RoomManager.submitMoveToRoom(roomForMoveSubmit, playerSubmittingMove, moveType);
+                break;
+
             default:
                 break;
 
+        }
+    }
+
+    private String[] parseMessageContents (String contents) {
+        return contents.split(" ");
+    }
+
+    private Game.ActionType parseAction(String action) {
+        switch(action) {
+            case "HIT":
+                return Game.ActionType.HIT;
+
+            default:
+                return Game.ActionType.STAND;
         }
     }
 

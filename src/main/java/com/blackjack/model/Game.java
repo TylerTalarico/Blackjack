@@ -4,12 +4,9 @@ import com.blackjack.util.DealUpdate;
 import com.blackjack.util.GameUpdate;
 import com.blackjack.util.HitUpdate;
 import com.blackjack.util.StandUpdate;
-import com.google.gson.Gson;
-import org.eclipse.jetty.websocket.api.Session;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
+import java.util.concurrent.ArrayBlockingQueue;
 
 public class Game {
 
@@ -18,15 +15,9 @@ public class Game {
         STAND
     }
 
-    public enum MoveResult {
-        BUST,
-        NOT_BUST
-    }
 
-    private final Gson gson = new Gson();
-
-    private final Collection<Player> playerList;
-    private final Iterator<Player> playerIterator;
+    private final ArrayBlockingQueue<Player> playerList;
+    private Iterator<Player> playerIterator;
     private Player activePlayer;
 
 
@@ -37,13 +28,15 @@ public class Game {
     private boolean currentRoundOver = false;
 
 
-    public Game(Collection<Player> list, int pointCap) {
+    public Game(ArrayBlockingQueue<Player> list, int pointCap) {
 
         this.playerList = list;
         this.playerIterator = this.playerList.iterator();
-        this.activePlayer = playerIterator.next();
+        this.activePlayer = null;
         this.pointCap = pointCap;
         this.deck = Deck.newDeck();
+
+
     }
 
 
@@ -54,8 +47,14 @@ public class Game {
 
     public void startRound() {
 
-        if (!this.isStarted)
+
+        this.playerIterator = playerList.iterator();
+        this.activePlayer = playerIterator.next();
+
+
+        if (!this.isStarted) {
             this.isStarted = true;
+        }
 
         if (!this.currentRoundOver)
             return;
@@ -71,17 +70,22 @@ public class Game {
 
     public GameUpdate performAction(ActionType move) {
 
+
         GameUpdate result;
         switch(move) {
             case HIT:
                 result = hit();
+                break;
 
             default:
                 result = stand();
+                break;
 
         }
-        if (!playerIterator.hasNext())
+
+        if (!playerIterator.hasNext() && activePlayer.isBust())
             this.currentRoundOver = true;
+
         return result;
     }
 
@@ -90,16 +94,24 @@ public class Game {
         activePlayer.deal(cardDrawn);
 
         if (activePlayer.isBust()) {
+            System.out.println(activePlayer + " busted!");
             Player bustedPlayer = activePlayer;
-            this.activePlayer = playerIterator.next();
+
+            if (playerIterator.hasNext())
+                this.activePlayer = playerIterator.next();
+            System.out.println("New Player after Bust: " + activePlayer);
             return new HitUpdate(bustedPlayer, activePlayer, cardDrawn, true);
         }
 
-        return new HitUpdate(activePlayer, activePlayer, cardDrawn, true);
+        System.out.println(activePlayer + " didn't bust");
+        return new HitUpdate(activePlayer, activePlayer, cardDrawn, false);
     }
 
     private StandUpdate stand() {
-        this.activePlayer = playerIterator.next();
+        if (playerIterator.hasNext())
+            this.activePlayer = playerIterator.next();
+        else
+            currentRoundOver = true;
         return new StandUpdate(activePlayer);
     }
 
@@ -137,6 +149,7 @@ public class Game {
     public Player getGameWinner() {
         return this.gameWinner;
     }
+
 
 
 }

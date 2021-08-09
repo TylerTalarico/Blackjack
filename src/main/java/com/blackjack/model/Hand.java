@@ -13,22 +13,29 @@ public class Hand {
     }
 
     public void addCard(Card card) {
+
         this.cards.add(card);
-        handTotal += card.value();
-        if (containsAce() && handTotal > 21)
-            handTotal -= 10;
+        calculateHandTotal();
+
     }
 
     public int getHandTotal() {
        return this.handTotal;
     }
 
-    private boolean containsAce() {
-        for (Card card: this.cards) {
-            if (card.id().equals("A"))
-                return true;
+    private void calculateHandTotal() {
+        int newTotal = 0;
+        for (Card c: this.cards) {
+            newTotal += c.value();
         }
-        return false;
+
+        for (Card card: this.cards) {
+            if (card.id().equals("A") && newTotal > 21) {
+                newTotal -= 10;
+            }
+        }
+
+        handTotal = newTotal;
     }
 
 
