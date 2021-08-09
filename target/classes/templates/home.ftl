@@ -57,7 +57,7 @@
         let rooms = data;
         roomList.innerHTML = "";
         rooms.forEach(element => {
-        roomList.innerHTML += "<li> " + element + "</li>";
+        roomList.innerHTML += "<li> <a href='/room?roomName=" + element + "'>" + element + "</a> </li>";
         });
     }
 
