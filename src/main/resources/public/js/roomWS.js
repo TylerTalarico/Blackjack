@@ -1,4 +1,5 @@
     import {createPlayerViewElement, addCardToPlayerView} from "./playerView.js"
+    import { testPlayers } from "./testPlayers.js";
     
     var ws = new WebSocket("ws://localhost:4567/roomJoin");
     var playerListHTML = document.getElementById("playerList");
@@ -12,7 +13,8 @@
     hitButton.addEventListener("click", hit)
     standButton.addEventListener("click", stand)
 
-    var players = [];
+    var players = testPlayers;
+
 
     function startGame() {
 

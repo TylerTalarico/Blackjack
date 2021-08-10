@@ -1,5 +1,6 @@
 .player_view {
     
+    box-sizing: border-box;
 
     width: 200px;
     height: 150px;
@@ -11,7 +12,8 @@
 .card_view {
     width: 100%;
     height: 80%;
-    background: red;
+    background: #283044;
+    
 }
 
 .name_view {
@@ -19,5 +21,7 @@
     padding-top: 10px;
     width: 100%;
     height: 20%;
-    background: white;
+    border-radius: 0 0 10px 10px;
+    color: white;
+    background: #a755c2;
 }

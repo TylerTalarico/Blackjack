@@ -18,6 +18,20 @@ import java.util.concurrent.TimeUnit;
 
 public class Room {
 
+    private class RoomData {
+        private String roomName;
+        private Collection<Player> playerList;
+        private int playerCap;
+        private int pointCap;
+
+        public RoomData(String rn, Collection<Player> pl, int playerCap, int pointCap) {
+            this.roomName = rn;
+            this.playerList = pl;
+            this.playerCap = playerCap;
+            this.pointCap = pointCap;
+        }
+    }
+
 
     private final ArrayBlockingQueue<Player> playerList;
     private final ConcurrentHashSet<Session> sessionList = new ConcurrentHashSet<>();
@@ -28,6 +42,8 @@ public class Room {
     private final Gson gson = new Gson();
     private boolean roomIsOpen = true;
 
+    private RoomData roomData;
+
     public Room(Player host, int playerCap, int pointCap, String roomName) {
         this.playerCap = playerCap;
         this.playerList = new ArrayBlockingQueue<>(playerCap, true);
@@ -35,6 +51,8 @@ public class Room {
         this.host = host;
         this.playerList.add(host);
         this.game = new Game(playerList, pointCap);
+
+        this.roomData = new RoomData(roomName, playerList, playerCap, pointCap);
     }
 
 
@@ -42,6 +60,8 @@ public class Room {
         if (player != null && playerList.size() < playerCap && roomIsOpen && !playerList.contains(player)) {
             playerList.add(player);
         }
+        if (playerList.size() == playerCap)
+            roomIsOpen = false;
         sessionList.add(user);
         updatePlayerList();
 
@@ -51,7 +71,9 @@ public class Room {
     public synchronized void removeUser(Session user, Player player) {
         sessionList.remove(user);
         playerList.remove(player);
-        System.out.println(player + " removed from room");
+
+        if (playerList.size() < playerCap && !game.isStarted())
+            this.roomIsOpen = true;
         updatePlayerList(DISCONNECT, player);
     }
 
@@ -139,6 +161,8 @@ public class Room {
     public GameUpdate makeMove(Game.ActionType move) {
         return this.game.performAction(move);
     }
+
+    public RoomData getRoomData() { return this.roomData; }
 
     private void updatePlayerList() {
         PlayerListMessage plm = new PlayerListMessage(playerList);
