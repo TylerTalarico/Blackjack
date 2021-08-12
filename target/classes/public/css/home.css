@@ -32,8 +32,7 @@ input {
 }
 
 #create-room-form {
-    display: flex;
-    flex-wrap: wrap;
+    
     position: fixed;
     align-items: center;
     width: 200px;
@@ -48,7 +47,12 @@ input {
     z-index: 2;
 }
 
-#create-room-form > input, #createRoomBtn{
+#create-room-form > form {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#create-room-form > form > input, #createRoomBtn{
     margin: auto;
     margin-top: 8px;
     border:none;
