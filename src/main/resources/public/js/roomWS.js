@@ -134,24 +134,34 @@
         else if (message === "HIT") {
             addCardToPlayerView(data.activePlayer, data.card)
 
+            if (data.bust) {
+                displayMessage(data.activePlayer.name + " busted!")
+            }
+
+
+
             if (window.playerName === data.newActivePlayer.name) {
                 enableActionButtons();
             }
         }
 
         else if (message === "STAND") {
+
+            displayMessage(data.activePlayer.name + " has stood at " + data.activePlayer.hand.handTotal)
             if (window.playerName === data.newActivePlayer.name) {
                 enableActionButtons();
             }
         }
 
         else if (message === "ROUND_OVER") {
+            displayMessage(data.winner.name + " Won the Round!")
             console.log(data.winner.name + " Won the Round!")
         }
 
         else if (message === "GAME_OVER") {
-                    console.log(data.winner.name + " Won the Game!")
-                }
+            displayMessage(data.winner.name + " Won the Game!")
+            console.log(data.winner.name + " Won the Game!")
+        }
     }
 
     function enableActionButtons() {
@@ -169,7 +179,7 @@
         messageElement.setAttribute("class", "game-notification")
         messageElement.innerText = message
 
-        document.getElementById("game-container").appendChild(messageElement)
+        document.getElementById("notifications").appendChild(messageElement)
 
         setTimeout( function() {
             messageElement.remove()

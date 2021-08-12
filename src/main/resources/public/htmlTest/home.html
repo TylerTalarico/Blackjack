@@ -19,10 +19,12 @@
 
     <div id="create-room-form">
         <button id="close-btn"> <i class="fas fa-times"></i></button>
-        <input class="room-name-form" placeholder="Room Name" name="roomName"></input>
-        <input class="number-form" type="number" placeholder="Player Cap" name="playerCap" min="2" max="6"></input>
-        <input class="number-form" type="number" placeholder="Points to Win" name="pointCap" min="1" max="11"></input>
-        <button type= "submit" id="createRoomBtn" action="/createRoom" method="post">Create</button>
+        <form action="/createRoom" method="post">
+            <input class="room-name-form" placeholder="Room Name" name="roomName"></input>
+            <input class="number-form" type="number" placeholder="Player Cap" name="playerCap" min="2" max="6"></input>
+            <input class="number-form" type="number" placeholder="Points to Win" name="pointCap" min="1" max="11"></input>
+            <button type= "submit" id="createRoomBtn">Create</button>
+        </form>
     </div>
 
     <div id="static-content">

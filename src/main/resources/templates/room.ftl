@@ -19,6 +19,8 @@
     </h1>
 
     <div id="content_container">
+        <div id="notifications">
+        </div>
         <div id="game_container">
             <div id="action_bar">
                 <button hidden disabled id="start_btn" >Start Game</button>
