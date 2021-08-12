@@ -108,11 +108,12 @@ public class Game {
     }
 
     private StandUpdate stand() {
+        Player playerStanding = this.activePlayer;
         if (playerIterator.hasNext())
             this.activePlayer = playerIterator.next();
         else
             currentRoundOver = true;
-        return new StandUpdate(activePlayer);
+        return new StandUpdate(playerStanding, activePlayer);
     }
 
     public DealUpdate deal(Player player) {

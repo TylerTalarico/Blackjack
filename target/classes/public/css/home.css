@@ -1,0 +1,68 @@
+form {
+    display: block;
+}
+
+input {
+    display: inline-block;
+    height: 30px;
+    font-size: 1.4rem;
+}
+
+.number-form {
+    width: 160px;
+
+}
+
+.room-name-form {
+    width: 90%;
+}
+
+#close-btn {
+    position: relative;
+    left: 80%;
+    display: flex;
+    margin-right: 20px;
+    height: 30px;
+    width: 30px;
+}
+
+#close-btn > * {
+    margin: auto;
+
+}
+
+#create-room-form {
+    display: flex;
+    flex-wrap: wrap;
+    position: fixed;
+    align-items: center;
+    width: 200px;
+    margin-left: calc(50% - 100px);
+    padding-top: 15px;
+    padding-bottom: 15px;
+    border-radius: 15px;
+    visibility: hidden;
+    opacity: 0;
+    background: #ffa51f;
+    transition: transform .5s, opacity .5s;
+    z-index: 2;
+}
+
+#create-room-form > input, #createRoomBtn{
+    margin: auto;
+    margin-top: 8px;
+    border:none;
+    border-radius: 5px;
+    text-align: center;
+}
+
+
+
+#create-room-btn {
+    margin-left: 10px;
+    transform: translateY(-6px);
+}
+
+#static-content {
+    transition: opacity .5s;
+}

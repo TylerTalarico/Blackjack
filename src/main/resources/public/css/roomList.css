@@ -1,0 +1,70 @@
+#room-list {
+    box-sizing: border-box;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    width: 100vw;
+    margin-top: 50px;
+}
+
+.room-heading {
+    text-align: center;
+    font-size: 3.5rem;
+    margin-top: 50px;
+}
+
+.room-name {
+    width: 100%;
+    background: #a755c2;
+}
+
+.point-goal {
+    margin-bottom: 8px;
+}
+
+.slot {
+
+    display: inline-block;
+    margin-left: 5px;
+    margin-right: 5px;
+    height: 30px;
+    width: 20px;
+    border-radius: 5px;
+    border-style: solid;
+    border-width: 3px;
+
+}
+
+.filled {
+    background-color: green;
+}
+
+.unfilled {
+    background-color: white;
+}
+
+li {
+    display: inline-block;
+    margin-bottom: 40px;
+    margin-left: 8%;
+    margin-right: 8%;
+    width: 220px;
+    height: 100px;
+    text-align: center;
+}
+
+a {
+    display: inline-block;
+    font-size: 1.4rem;
+    border-radius: 0 0 5px 5px;
+    text-decoration: none;
+    color: white;
+}
+
+a:visited {
+    color: white;
+}
+
+
+
+
