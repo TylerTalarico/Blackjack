@@ -1,6 +1,8 @@
 package com.blackjack.application;
 
-import com.blackjack.util.Message;
+import com.blackjack.util.LobbyUpdate.LobbyUpdate;
+import com.blackjack.util.LobbyUpdate.RoomListUpdate;
+import com.blackjack.util.PlayerListMessage;
 import com.google.gson.Gson;
 import org.eclipse.jetty.util.ConcurrentHashSet;
 import org.eclipse.jetty.websocket.api.Session;
@@ -31,20 +33,26 @@ public class WebSocketSessionManager {
         }
     }
 
-    public static void updateAllClients() {
+    public static void updateAllClients(LobbyUpdate lu) {
 
         for (Session s: users) {
-            updateUser(s);
+            try {
+                s.getRemote().sendString(gson.toJson(lu));
+
+            }catch(Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
     public static void updateUser(Session user) {
         try {
-            user.getRemote().sendString(gson.toJson(RoomManager.getRoomNames()));
-            System.out.println(RoomManager.getRoomNames());
+            user.getRemote().sendString(gson.toJson(new RoomListUpdate(RoomManager.getAllRoomData())));
+            System.out.println(gson.toJson(new RoomListUpdate(RoomManager.getAllRoomData())));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 
 }

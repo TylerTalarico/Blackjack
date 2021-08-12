@@ -3,8 +3,12 @@ package com.blackjack.application;
 import com.blackjack.model.Game;
 import com.blackjack.model.Player;
 import com.blackjack.util.Message;
+import com.blackjack.util.RoomData;
 import org.eclipse.jetty.websocket.api.Session;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -13,10 +17,13 @@ public class RoomManager {
     private static final ConcurrentHashMap<String, Room> roomList = new ConcurrentHashMap<>();
 
 
-    public static void createRoom(String name, Player host, int playerCap, int pointCap) {
+    public static Room createRoom(String name, Player host, int playerCap, int pointCap) {
+        Room room = null;
         if (!roomList.containsKey(name)) {
-            roomList.put(name, new Room(host, playerCap, pointCap, name));
+            room = new Room(host, playerCap, pointCap, name);
+            roomList.put(name, room);
         }
+        return room;
     }
 
     public static Room getRoom(String roomName) {
@@ -42,8 +49,13 @@ public class RoomManager {
     }
 
 
-    public static Set<String> getRoomNames() {
-        return roomList.keySet();
+    public static ArrayList<RoomData> getAllRoomData() {
+        ArrayList<RoomData> roomData = new ArrayList<>();
+        for (Room room: roomList.values())
+            roomData.add(room.getRoomData());
+
+        return roomData;
+
 
     }
 

@@ -1,7 +1,5 @@
 package com.blackjack.model;
 
-import org.eclipse.jetty.websocket.api.Session;
-
 public class Player {
 
     private final String name;

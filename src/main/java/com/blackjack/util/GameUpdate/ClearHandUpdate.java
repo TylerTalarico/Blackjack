@@ -1,4 +1,4 @@
-package com.blackjack.util;
+package com.blackjack.util.GameUpdate;
 
 public class ClearHandUpdate extends GameUpdate{
 

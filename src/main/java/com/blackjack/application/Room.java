@@ -4,6 +4,7 @@ package com.blackjack.application;
 import com.blackjack.model.Game;
 import com.blackjack.model.Player;
 import com.blackjack.util.*;
+import com.blackjack.util.GameUpdate.*;
 import com.blackjack.util.PlayerConnectionMessage.ConnectionType;
 import static com.blackjack.util.PlayerConnectionMessage.ConnectionType.*;
 
@@ -18,20 +19,6 @@ import java.util.concurrent.TimeUnit;
 
 public class Room {
 
-    private class RoomData {
-        private String roomName;
-        private Collection<Player> playerList;
-        private int playerCap;
-        private int pointCap;
-
-        public RoomData(String rn, Collection<Player> pl, int playerCap, int pointCap) {
-            this.roomName = rn;
-            this.playerList = pl;
-            this.playerCap = playerCap;
-            this.pointCap = pointCap;
-        }
-    }
-
 
     private final ArrayBlockingQueue<Player> playerList;
     private final ConcurrentHashSet<Session> sessionList = new ConcurrentHashSet<>();
@@ -42,7 +29,6 @@ public class Room {
     private final Gson gson = new Gson();
     private boolean roomIsOpen = true;
 
-    private RoomData roomData;
 
     public Room(Player host, int playerCap, int pointCap, String roomName) {
         this.playerCap = playerCap;
@@ -52,13 +38,13 @@ public class Room {
         this.playerList.add(host);
         this.game = new Game(playerList, pointCap);
 
-        this.roomData = new RoomData(roomName, playerList, playerCap, pointCap);
     }
 
 
     public synchronized void addUser(Session user, Player player) {
         if (player != null && playerList.size() < playerCap && roomIsOpen && !playerList.contains(player)) {
             playerList.add(player);
+
         }
         if (playerList.size() == playerCap)
             roomIsOpen = false;
@@ -158,11 +144,13 @@ public class Room {
         return this.host;
     }
 
+    public RoomData getRoomData() {
+        return new RoomData(roomName, playerCap, playerList.size(), game.getPointCap());
+    }
+
     public GameUpdate makeMove(Game.ActionType move) {
         return this.game.performAction(move);
     }
-
-    public RoomData getRoomData() { return this.roomData; }
 
     private void updatePlayerList() {
         PlayerListMessage plm = new PlayerListMessage(playerList);

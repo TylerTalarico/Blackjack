@@ -1,13 +1,14 @@
 package com.blackjack.controller;
 
+import com.blackjack.application.Room;
 import com.blackjack.application.RoomManager;
 import com.blackjack.application.WebServer;
 import com.blackjack.application.WebSocketSessionManager;
 import com.blackjack.model.Player;
+import com.blackjack.util.LobbyUpdate.CreateRoomUpdate;
 import spark.*;
 
 import java.util.HashMap;
-import java.util.Objects;
 
 public class PostCreateRoomRoute implements Route {
 
@@ -32,8 +33,9 @@ public class PostCreateRoomRoute implements Route {
 
         if (RoomManager.getRoom(roomName) == null && host != null) {
 
-            RoomManager.createRoom(roomName, host, playerCap, pointCap);
-            WebSocketSessionManager.updateAllClients();
+            Room room = RoomManager.createRoom(roomName, host, playerCap, pointCap);
+            if (room != null)
+                WebSocketSessionManager.updateAllClients(new CreateRoomUpdate(room.getRoomData()));
             response.redirect(WebServer.ROOM_URL + "?" + GetRoomRoute.ROOM_NAME_ATTR + "=" + roomName);
         }
 

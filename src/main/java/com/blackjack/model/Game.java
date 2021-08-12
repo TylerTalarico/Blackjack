@@ -1,9 +1,9 @@
 package com.blackjack.model;
 
-import com.blackjack.util.DealUpdate;
-import com.blackjack.util.GameUpdate;
-import com.blackjack.util.HitUpdate;
-import com.blackjack.util.StandUpdate;
+import com.blackjack.util.GameUpdate.DealUpdate;
+import com.blackjack.util.GameUpdate.GameUpdate;
+import com.blackjack.util.GameUpdate.HitUpdate;
+import com.blackjack.util.GameUpdate.StandUpdate;
 
 import java.util.Iterator;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -149,6 +149,8 @@ public class Game {
     public Player getGameWinner() {
         return this.gameWinner;
     }
+
+    public int getPointCap() { return this.pointCap; }
 
 
 

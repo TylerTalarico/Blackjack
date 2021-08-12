@@ -1,4 +1,4 @@
-package com.blackjack.util;
+package com.blackjack.util.GameUpdate;
 
 import com.blackjack.model.Card;
 import com.blackjack.model.Player;

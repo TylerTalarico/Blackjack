@@ -13,7 +13,15 @@
     hitButton.addEventListener("click", hit)
     standButton.addEventListener("click", stand)
 
-    var players = testPlayers;
+    //var players = testPlayers;
+    var players = []
+
+    disableActionButtons();
+
+    // Uncomment to create test player elements
+    // players.forEach(player => {
+    //     createPlayerViewElement(player);
+    // })
 
 
     function startGame() {
@@ -53,9 +61,7 @@
     }
 
 
-    players.forEach(player => {
-        createPlayerViewElement(player);
-    })
+    
 
     ws.onopen = function (event) {
         console.log("Websocket to Room is open");
@@ -78,6 +84,7 @@
     }
 
     function processMessage(data) {
+        console.log(data)
         let message = data.messageType;
         if (message === "PLAYER_LIST") {
             console.log("New player joined room");
@@ -101,8 +108,6 @@
             let player = data.player
 
             addCardToPlayerView(player, card)
-
-
 
         }
 
@@ -157,6 +162,21 @@
     function disableActionButtons() {
         hitButton.disabled = true;
         standButton.disabled = true;
+    }
+
+    function displayMessage(message) {
+        let messageElement = document.createElement("h1")
+        messageElement.setAttribute("class", "game-notification")
+        messageElement.innerText = message
+
+        document.getElementById("game-container").appendChild(messageElement)
+
+        setTimeout( function() {
+            messageElement.remove()
+        }, 3000)
+
+        
+
     }
 
     window.onbeforeunload = function() {
