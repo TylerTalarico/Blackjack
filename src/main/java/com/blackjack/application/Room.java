@@ -81,6 +81,9 @@ public class Room {
 
     public void startRound() {
 
+        if (playerList.size() == 1)
+            return;
+
         System.out.println("Player List: " + playerList);
 
         game.startRound();

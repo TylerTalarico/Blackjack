@@ -3,10 +3,10 @@ import {testRooms} from "../js/testRoom.js"
 
     var ws = new WebSocket("ws://localhost:4567/roomList");
 
-    // Remove after done testing
-    testRooms.forEach(room => {
-        createRoomElement(room.roomName, room.playerCap, room.pointCap)
-    }) 
+    // Uncomment when working on page layout
+    // testRooms.forEach(room => {
+    //     createRoomElement(room.roomName, room.playerCap, room.pointCap)
+    // }) 
     
 
 
