@@ -7,6 +7,7 @@ export function createRoomElement(roomName, playerCap, currentNumPlayers, pointC
     roomElement.setAttribute("id", "roomId_" + roomName)
 
     let roomSlots = document.createElement("div")
+    roomSlots.setAttribute("id", "slotId_" + roomName)
     console.log("Player Cap: " + playerCap)
 
 
@@ -42,4 +43,15 @@ export function createRoomElement(roomName, playerCap, currentNumPlayers, pointC
     
     roomList.appendChild(roomElement)
 
+}
+
+export function adjustRoomSlotElements(roomName, playerCount) {
+    let slots = document.getElementById("slotId_" + roomName).childNodes
+
+    for (let i = 0; i < slots.length; i++) {
+        if (i < playerCount)
+            slots[i].setAttribute("class", "filled slot")
+        else
+            slots[i].setAttribute("class", "unfilled slot")
+    }
 }

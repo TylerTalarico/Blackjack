@@ -96,13 +96,7 @@
             
 
         }
-        else if (message === "DISCONNECT") {
-            console.log("Player left")
-            let playerLeaving = data.player
-            let elem = document.getElementById("playerId_" + playerLeaving.name)
-            elem.remove()
-            players.remove(playerLeaving);
-        }
+        
         else if (message === "INITIAL_DEAL") {
             let card = data.card
             let player = data.player
@@ -120,39 +114,6 @@
             console.log(players)
         }
 
-        else if (message === "START_ROUND") {
-            if (data.activePlayer.name === window.playerName) {
-                enableActionButtons();
-            }
-            else {
-                 disableActionButtons();
-            }
-
-            console.log(data.activePlayer.name)
-        }
-
-        else if (message === "HIT") {
-            addCardToPlayerView(data.activePlayer, data.card)
-
-            if (data.bust) {
-                displayMessage(data.activePlayer.name + " busted!")
-            }
-
-
-
-            if (window.playerName === data.newActivePlayer.name) {
-                enableActionButtons();
-            }
-        }
-
-        else if (message === "STAND") {
-
-            displayMessage(data.activePlayer.name + " has stood at " + data.activePlayer.hand.handTotal)
-            if (window.playerName === data.newActivePlayer.name) {
-                enableActionButtons();
-            }
-        }
-
         else if (message === "ROUND_OVER") {
             displayMessage(data.winner.name + " Won the Round!")
             console.log(data.winner.name + " Won the Round!")
@@ -162,6 +123,45 @@
             displayMessage(data.winner.name + " Won the Game!")
             console.log(data.winner.name + " Won the Game!")
         }
+
+        else {
+
+            checkIfCurrentPlayer(data.newActivePlayer)
+
+            if (message === "DISCONNECT") {
+                console.log("Player left")
+                let playerLeaving = data.playerLeaving
+                let elem = document.getElementById("playerId_" + playerLeaving.name)
+                elem.remove()
+
+                let i = players.indexOf(playerLeaving)
+
+                if (i !== -1)
+                    players.splice(i);
+            }
+
+            else if (message === "START_ROUND") {
+
+                console.log(data.activePlayer.name)
+            }
+
+
+            else if (message === "HIT") {
+                addCardToPlayerView(data.activePlayer, data.card)
+
+                if (data.bust) {
+                    displayMessage(data.activePlayer.name + " busted!")
+                }
+            }
+
+            else if (message === "STAND") {
+
+                displayMessage(data.activePlayer.name + " has stood at " + data.activePlayer.hand.handTotal)
+            }
+
+        }
+
+        
     }
 
     function enableActionButtons() {
@@ -172,6 +172,16 @@
     function disableActionButtons() {
         hitButton.disabled = true;
         standButton.disabled = true;
+    }
+
+    function checkIfCurrentPlayer(currentPlayer) {
+        if (currentPlayer !== null && currentPlayer.name === window.playerName) {
+            enableActionButtons()
+        }
+
+        else {
+            disableActionButtons()
+        }
     }
 
     function displayMessage(message) {
