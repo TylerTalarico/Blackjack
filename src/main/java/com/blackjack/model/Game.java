@@ -149,8 +149,9 @@ public class Game {
         if (!this.isStarted)
             return null;
 
-        else if (this.activePlayer == null && playerIterator.hasNext()) {
+        else if (!this.playerList.contains(this.activePlayer) && playerIterator.hasNext()) {
             this.activePlayer = playerIterator.next();
+            System.out.println("New Active Player: " + this.activePlayer.getName());
             return this.activePlayer;
         }
         else

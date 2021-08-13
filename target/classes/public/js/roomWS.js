@@ -142,7 +142,7 @@
 
             else if (message === "START_ROUND") {
 
-                console.log(data.activePlayer.name)
+                console.log(data.newActivePlayer.name)
             }
 
 
