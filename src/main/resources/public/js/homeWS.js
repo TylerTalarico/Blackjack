@@ -1,4 +1,4 @@
-import {createRoomElement} from "../js/roomListView.js"
+import {createRoomElement, adjustRoomSlotElements} from "../js/roomListView.js"
 import {testRooms} from "../js/testRoom.js"
 
     var ws = new WebSocket("ws://localhost:4567/roomList");
@@ -47,8 +47,13 @@ import {testRooms} from "../js/testRoom.js"
             })
         }
 
-        else if (message === "ROOM_NUM_PLAYERS_UPDATE") {
+        else if (message === "REMOVE_ROOM") {
+            let elem = document.getElementById("roomID_" + data.roomName)
+            elem.remove()
+        }
 
+        else if (message === "ROOM_NUM_PLAYERS_UPDATE") {
+            adjustRoomSlotElements(data.roomName, data.numPlayers)
         }
     
     }

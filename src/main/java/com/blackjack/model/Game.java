@@ -145,7 +145,17 @@ public class Game {
         return currentRoundOver;
     }
 
-    public Player getActivePlayer() { return this.activePlayer; }
+    public Player getActivePlayer() {
+        if (!this.isStarted)
+            return null;
+
+        else if (this.activePlayer == null && playerIterator.hasNext()) {
+            this.activePlayer = playerIterator.next();
+            return this.activePlayer;
+        }
+        else
+            return this.activePlayer;
+    }
 
     public Player getGameWinner() {
         return this.gameWinner;

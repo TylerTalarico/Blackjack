@@ -2,14 +2,12 @@ package com.blackjack.application;
 
 import com.blackjack.model.Game;
 import com.blackjack.model.Player;
-import com.blackjack.util.Message;
+import com.blackjack.util.LobbyUpdate.RemoveRoomUpdate;
 import com.blackjack.util.RoomData;
 import org.eclipse.jetty.websocket.api.Session;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Set;
+
 import java.util.concurrent.ConcurrentHashMap;
 
 public class RoomManager {
@@ -72,5 +70,10 @@ public class RoomManager {
         if (room != null) {
             room.performAction(moveType, playerSubmittingMove);
         }
+    }
+
+    public static void removeRoom(String roomName) {
+        roomList.remove(roomName);
+        WebSocketSessionManager.updateAllClients(new RemoveRoomUpdate(roomName));
     }
 }

@@ -5,6 +5,7 @@ import com.blackjack.model.Game;
 import com.blackjack.model.Player;
 import com.blackjack.util.*;
 import com.blackjack.util.GameUpdate.*;
+import com.blackjack.util.LobbyUpdate.RoomNumberPlayersUpdate;
 import com.blackjack.util.PlayerConnectionMessage.ConnectionType;
 import static com.blackjack.util.PlayerConnectionMessage.ConnectionType.*;
 
@@ -44,7 +45,7 @@ public class Room {
     public synchronized void addUser(Session user, Player player) {
         if (player != null && playerList.size() < playerCap && roomIsOpen && !playerList.contains(player)) {
             playerList.add(player);
-
+            WebSocketSessionManager.updateAllClients(new RoomNumberPlayersUpdate(roomName, playerList.size()));
         }
         if (playerList.size() == playerCap)
             roomIsOpen = false;
@@ -58,9 +59,16 @@ public class Room {
         sessionList.remove(user);
         playerList.remove(player);
 
+        if (this.playerList.isEmpty())
+            RoomManager.removeRoom(this.roomName);
         if (playerList.size() < playerCap && !game.isStarted())
             this.roomIsOpen = true;
+        if (this.host.equals(player) && !this.playerList.isEmpty())
+            this.host = playerList.peek();
         updatePlayerList(DISCONNECT, player);
+        WebSocketSessionManager.updateAllClients(new RoomNumberPlayersUpdate(roomName, playerList.size()));
+
+
     }
 
     public void startRound() {
@@ -68,10 +76,8 @@ public class Room {
         System.out.println("Player List: " + playerList);
 
         game.startRound();
+        updateGameState(new ClearHandUpdate());
 
-        for (Session session: sessionList) {
-            updateGameState(new ClearHandUpdate());
-        }
 
         for (int i = 0; i < 2; i++) {
             for (Player p: playerList) {
@@ -148,9 +154,6 @@ public class Room {
         return new RoomData(roomName, playerCap, playerList.size(), game.getPointCap());
     }
 
-    public GameUpdate makeMove(Game.ActionType move) {
-        return this.game.performAction(move);
-    }
 
     private void updatePlayerList() {
         PlayerListMessage plm = new PlayerListMessage(playerList);
@@ -166,7 +169,7 @@ public class Room {
     }
 
     private void updatePlayerList(ConnectionType ct, Player player) {
-        PlayerConnectionMessage pcm = new PlayerConnectionMessage(ct, player);
+        PlayerConnectionMessage pcm = new PlayerConnectionMessage(ct, player, this.game.getActivePlayer());
         for (Session s: sessionList) {
             try {
                 s.getRemote().sendString(gson.toJson(pcm));

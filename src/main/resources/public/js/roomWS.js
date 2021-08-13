@@ -98,10 +98,14 @@
         }
         else if (message === "DISCONNECT") {
             console.log("Player left")
-            let playerLeaving = data.player
+            let playerLeaving = data.playerLeaving
             let elem = document.getElementById("playerId_" + playerLeaving.name)
             elem.remove()
-            players.remove(playerLeaving);
+
+            let i = players.indexOf(playerLeaving)
+
+            if (i !== -1)
+                players.splice(i);
         }
         else if (message === "INITIAL_DEAL") {
             let card = data.card

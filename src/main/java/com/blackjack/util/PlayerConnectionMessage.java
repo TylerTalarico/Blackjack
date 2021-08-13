@@ -11,10 +11,12 @@ public class PlayerConnectionMessage {
     }
 
     private final ConnectionType messageType;
-    private final Player player;
+    private final Player playerLeaving;
+    private final Player newActivePlayer;
 
-    public PlayerConnectionMessage(ConnectionType type, Player player) {
+    public PlayerConnectionMessage(ConnectionType type, Player player, Player newActivePlayer) {
         this.messageType = type;
-        this.player = player;
+        this.playerLeaving = player;
+        this.newActivePlayer = newActivePlayer;
     }
 }
