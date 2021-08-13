@@ -141,6 +141,7 @@ public class Game {
 
         if (roundWinner.getPointCount() == pointCap) {
             this.gameWinner = roundWinner;
+            clearPlayerPoints();
         }
         return roundWinner;
     }
@@ -167,6 +168,12 @@ public class Game {
     }
 
     public int getPointCap() { return this.pointCap; }
+
+    private void clearPlayerPoints() {
+        for (Player player: playerList) {
+            player.resetPoints();
+        }
+    }
 
 
 

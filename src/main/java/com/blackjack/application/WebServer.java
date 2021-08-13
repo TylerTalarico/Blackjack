@@ -6,7 +6,6 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 import com.blackjack.controller.*;
-import com.blackjack.model.Player;
 import com.google.gson.Gson;
 import spark.TemplateEngine;
 
@@ -56,11 +55,13 @@ public class WebServer {
 
     public static final String HOME_URL = "/";
 
-    public static final String SIGNIN_URL = "/signin";
+    public static final String SIGN_IN_URL = "/signin";
 
     public static final String ROOM_URL = "/room";
 
     public static final String CREATE_ROOM_URL = "/createRoom";
+
+    public static final String SIGN_OUT_URL = "/signOut";
 
 
     /**
@@ -136,7 +137,9 @@ public class WebServer {
 
         post(CREATE_ROOM_URL, new PostCreateRoomRoute(templateEngine));
 
-        post(SIGNIN_URL, new PostSignInRoute(playerServices));
+        post(SIGN_IN_URL, new PostSignInRoute());
+
+        post(SIGN_OUT_URL, new PostSignOutRoute());
 
 
         LOG.config("WebServer is initialized.");

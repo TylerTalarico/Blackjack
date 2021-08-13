@@ -81,6 +81,12 @@
         }, 500)
 
     }
+
+    window.onbeforeunload = function() {
+        xhtml = new XMLHttpRequest()
+        xhtml.open("POST", "/signOut", false)
+        xhtml.send();
+    }
 </script>
 <script type="module" src="../js/homeWS.js"></script>
 <script type="module" src="../js/roomListView.js"></script>

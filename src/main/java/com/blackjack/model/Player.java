@@ -42,4 +42,8 @@ public class Player {
     public void clearHand() {
         this.hand = new Hand();
     }
+
+    public void resetPoints() {
+        this.pointCount = 0;
+    }
 }

@@ -1,4 +1,4 @@
-package com.blackjack.controller;
+package com.blackjack.application;
 
 import com.blackjack.model.Player;
 import spark.Session;
@@ -19,7 +19,7 @@ public class PlayerServices {
     public static SignInResult signIn(String name, Session user) {
         if (playerList.containsKey(name))
             return SignInResult.NAME_TAKEN;
-        else if (name.equals(""))
+        else if (!nameIsValid(name))
             return SignInResult.NAME_INVALID;
         else {
 
@@ -28,6 +28,26 @@ public class PlayerServices {
             user.attribute("player", newPlayer);
             return SignInResult.SUCCESS;
         }
+    }
+
+    public static void signOut(String name, Session user) {
+        playerList.remove(name);
+        user.removeAttribute("player");
+    }
+
+    private static boolean nameIsValid(String name) {
+        if (name.length() < 4 || name.length() > 11)
+            return false;
+
+        for (int i = 0; i < name.length(); i++) {
+            int charIndex = name.charAt(i);
+
+            // Each character can only be a letter or number
+            if (charIndex < 48 || (charIndex > 57 && charIndex < 65) || (charIndex > 90 && charIndex < 97) || charIndex > 122)
+                return false;
+        }
+
+        return true;
     }
 
     public static Player getPlayer(String playerName) {
