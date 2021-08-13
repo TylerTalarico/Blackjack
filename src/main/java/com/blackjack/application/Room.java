@@ -56,15 +56,22 @@ public class Room {
     public synchronized void removeUser(Session user, Player player) {
 
 
-        if (this.playerList.size() == 1)
+        sessionList.remove(user);
+        playerList.remove(player);
+
+        if (this.playerList.isEmpty())
             RoomManager.removeRoom(this.roomName);
+
+        else if(this.playerList.size() == 1 && game.isStarted())
+            updateGameState(new GameOverUpdate(playerList.peek()));
+
         if (this.host.equals(player) && !this.playerList.isEmpty())
             this.host = playerList.peek();
+
         if (playerList.size() < playerCap && !game.isStarted())
             this.roomIsOpen = true;
 
-        sessionList.remove(user);
-        playerList.remove(player);
+
 
         updatePlayerDisconnect(player);
         WebSocketSessionManager.updateAllClients(new RoomNumberPlayersUpdate(roomName, playerList.size()));

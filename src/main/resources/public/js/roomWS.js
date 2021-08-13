@@ -138,6 +138,8 @@
 
                 if (i !== -1)
                     players.splice(i);
+
+                displayMessage(playerLeaving.name + " has left")
             }
 
             else if (message === "START_ROUND") {
@@ -175,7 +177,8 @@
     }
 
     function checkIfCurrentPlayer(currentPlayer) {
-        if (currentPlayer !== null && currentPlayer.name === window.playerName) {
+        if (currentPlayer !== null) {
+            if (currentPlayer.name === window.playerName)
             enableActionButtons()
         }
 
