@@ -203,6 +203,8 @@
     }
 
     window.onbeforeunload = function() {
+        
+    
         let closeRequest = {
             messageType: "PLAYER_CLOSE",
             content: roomName + " " + playerName
@@ -210,4 +212,8 @@
 
 
         ws.send(JSON.stringify(closeRequest));
+
+        xhtml = new XMLHttpRequest()
+        xhtml.open("POST", "/signOut", false)
+        xhtml.send();
     }

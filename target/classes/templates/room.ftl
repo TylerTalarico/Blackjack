@@ -17,6 +17,10 @@
     <h1>
         Room: ${roomName}
     </h1>
+    <form action="/signOut" method="post">
+        <button type="submit">Exit</button>
+    </form>
+    
 
     <div id="content_container">
         <div id="notifications">
