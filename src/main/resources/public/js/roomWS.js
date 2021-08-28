@@ -31,7 +31,7 @@
 
         let startGameRequest = {
             messageType: "START_GAME",
-            content: window.roomName + " " + window.playerName
+            content: window.roomName + "<>" + window.playerName
         }
 
         ws.send(JSON.stringify(startGameRequest))
@@ -43,7 +43,7 @@
 
         let hitRequest = {
             messageType: "SUBMIT_MOVE",
-            content: window.roomName + " " + window.playerName + " HIT"
+            content: window.roomName + "<>" + window.playerName + "<>HIT"
         }
         console.log(hitRequest.content)
         ws.send(JSON.stringify(hitRequest))
@@ -55,7 +55,7 @@
 
         let standRequest = {
             messageType: "SUBMIT_MOVE",
-            content: window.roomName + " " + window.playerName + " STAND"
+            content: window.roomName + "<>" + window.playerName + "<>STAND"
         }
         ws.send(JSON.stringify(standRequest))
     }
@@ -67,7 +67,7 @@
         console.log("Websocket to Room is open");
         let joinRequest = {
             messageType: "GET_ROOM_NAME",
-            content: window.roomName + " " + window.playerName
+            content: window.roomName + "<>" + window.playerName
         }
         ws.send(JSON.stringify(joinRequest))
     }
@@ -207,7 +207,7 @@
     
         let closeRequest = {
             messageType: "PLAYER_CLOSE",
-            content: roomName + " " + playerName
+            content: roomName + "<>" + playerName
         }
 
 

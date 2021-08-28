@@ -42,6 +42,10 @@ public class RoomWebSocketHandler {
         String messageType = msg.messageType();
         String[] messageContents = parseMessageContents(msg.contents());
 
+        /*
+        Handles the data based on what kind of message it is
+         */
+
         switch (messageType) {
 
             case ROOM_NAME_REQUEST:
@@ -93,10 +97,27 @@ public class RoomWebSocketHandler {
         }
     }
 
+    /**
+     * Parses data from a message from a client
+     * @param
+     *      contents  message contents
+     * @return
+     *      the contents in an array
+     */
     private String[] parseMessageContents (String contents) {
-        return contents.split(" ");
+        // The message contents are separated using this regex
+        return contents.split("<>");
     }
 
+    /**
+     * Turns String representing an game action {@link Game.ActionType}
+     * into an ActionType
+     *
+     * @param action
+     *      action taken
+     * @return
+     *      ActionType object
+     */
     private Game.ActionType parseAction(String action) {
         switch(action) {
             case "HIT":

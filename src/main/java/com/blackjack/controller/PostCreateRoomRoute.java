@@ -33,6 +33,7 @@ public class PostCreateRoomRoute implements Route {
 
         if (RoomManager.getRoom(roomName) == null && host != null) {
 
+
             Room room = RoomManager.createRoom(roomName, host, playerCap, pointCap);
             if (room != null)
                 WebSocketSessionManager.updateAllClients(new CreateRoomUpdate(room.getRoomData()));

@@ -11,7 +11,6 @@ import com.google.gson.Gson;
 import org.eclipse.jetty.util.ConcurrentHashSet;
 import org.eclipse.jetty.websocket.api.Session;
 
-import java.util.Collection;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -19,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 public class Room {
 
 
+    // ArrayBLockingQueue is thread safe
     private final ArrayBlockingQueue<Player> playerList;
     private final ConcurrentHashSet<Session> sessionList = new ConcurrentHashSet<>();
     private Player host;
@@ -29,6 +29,18 @@ public class Room {
     private boolean roomIsOpen = true;
 
 
+    /**
+     * Room Constructor
+     *
+     * @param host
+     *      host {@link Player} of the room (can start the game)
+     * @param playerCap
+     *      max players in a room
+     * @param pointCap
+     *      number of points to win a game
+     * @param roomName
+     *      name of the room
+     */
     public Room(Player host, int playerCap, int pointCap, String roomName) {
         this.playerCap = playerCap;
         this.playerList = new ArrayBlockingQueue<>(playerCap, true);
@@ -36,28 +48,47 @@ public class Room {
         this.host = host;
         this.playerList.add(host);
         this.game = new Game(playerList, pointCap);
-
     }
 
 
+    /**
+     * Add a user to a room
+     *
+     * @param user
+     *      WebSocket Session of the user
+     * @param player
+     *      user's Player object
+     */
     public synchronized void addUser(Session user, Player player) {
+
+        // Logic to determine if player can join the room
         if (player != null && playerList.size() < playerCap && roomIsOpen && !playerList.contains(player)) {
             playerList.add(player);
             WebSocketSessionManager.updateAllClients(new RoomNumberPlayersUpdate(roomName, playerList.size()));
         }
+        // If the player cap is reached, close the room
         if (playerList.size() == playerCap)
             roomIsOpen = false;
         sessionList.add(user);
         updatePlayerList();
-
     }
 
-
+    /**
+     * Remove user from a room
+     *
+     * @param user
+     *      WebSocket session {@link Session} of the user
+     * @param player
+     *      user's Player object
+     */
     public synchronized void removeUser(Session user, Player player) {
 
 
         sessionList.remove(user);
         playerList.remove(player);
+
+        // If the player leaving affects the game,
+        // then update the game state
 
         if (this.playerList.isEmpty())
             RoomManager.removeRoom(this.roomName);
@@ -71,18 +102,20 @@ public class Room {
         if (playerList.size() < playerCap && !game.isStarted())
             this.roomIsOpen = true;
 
-
-
+        // Sends data to update the corresponding room UI element
         updatePlayerDisconnect(player);
         WebSocketSessionManager.updateAllClients(new RoomNumberPlayersUpdate(roomName, playerList.size()));
-
-
     }
 
+    /**
+     * Starts the round
+     */
     public void startRound() {
 
         if (playerList.size() == 1)
             return;
+
+        //TODO: Send an error message if the round was not started
 
         System.out.println("Player List: " + playerList);
 
@@ -90,11 +123,14 @@ public class Room {
         updateGameState(new ClearHandUpdate());
 
 
+        // Deals 2 cards to each player
         for (int i = 0; i < 2; i++) {
             for (Player p: playerList) {
                 DealUpdate du = game.deal(p);
 
                 updateGameState(du);
+
+                // Insert a 300ms delay between each card
                 try {
                     TimeUnit.MILLISECONDS.sleep(300);
                 }catch (InterruptedException ie) {
@@ -109,6 +145,15 @@ public class Room {
 
     }
 
+    /**
+     * Perform a certain action (either HIT or STAND)
+     * This could be expanded to include other actions, such as splitting
+     *
+     * @param action
+     *      action to be performed
+     * @param playerSubmitting
+     *      player making the move
+     */
     public void performAction(Game.ActionType action, Player playerSubmitting) {
 
         if (!playerSubmitting.equals(game.getActivePlayer()))
@@ -134,15 +179,15 @@ public class Room {
                 startRound();
             }
         }
-
-
-    }
-
-    public Collection<Player> getPlayerList() {
-        return this.playerList;
     }
 
 
+    /**
+     * Send a game update to the UI
+     *
+     * @param gu
+     *      GameUpdate object being sent to the client
+     */
     private void updateGameState(GameUpdate gu) {
         for (Session s: sessionList) {
             try {
@@ -153,19 +198,33 @@ public class Room {
         }
     }
 
+    /**
+     * @return
+     *      name of the Room
+     */
     public String getRoomName() {
         return this.roomName;
     }
 
+    /**
+     * @return
+     *      Player object of the host user
+     */
     public Player getHost() {
         return this.host;
     }
 
+    /**
+     * @return
+     *      information used by the UI to create and update room elements
+     */
     public RoomData getRoomData() {
         return new RoomData(roomName, playerCap, playerList.size(), game.getPointCap());
     }
 
-
+    /**
+     * update the client with new player data
+     */
     private void updatePlayerList() {
         PlayerListMessage plm = new PlayerListMessage(playerList);
         for (Session s: sessionList) {
@@ -179,6 +238,10 @@ public class Room {
         }
     }
 
+    /**
+     * @param player
+     *      Player {@link Player} disconnecting from the site
+     */
     private void updatePlayerDisconnect(Player player) {
         PlayerDisconnectUpdate pdm = new PlayerDisconnectUpdate(player, this.game.getActivePlayer());
         for (Session s: sessionList) {
@@ -191,8 +254,6 @@ public class Room {
             }
         }
     }
-
-
 
 
 }

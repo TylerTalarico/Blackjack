@@ -28,9 +28,12 @@ public class PlayerServices {
     /**
      * Used to sign in a player if the name is available
      *
-     * @param name  desired name
-     * @param user  HTTPSession used to keep track of the Player object created
-     * @return  result of the SignIn
+     * @param name
+     *      desired name
+     * @param user
+     *      HTTPSession used to keep track of the Player object created
+     * @return
+     *      result of the SignIn
      */
     public static SignInResult signIn(String name, Session user) {
         if (playerList.containsKey(name))
@@ -51,8 +54,10 @@ public class PlayerServices {
     /**
      * Removes the Player from playerList
      *
-     * @param name  Name of Player signing out
-     * @param user  HTTPSession of user leaving
+     * @param name
+     *      Name of Player signing out
+     * @param user
+     *      HTTPSession of user leaving
      */
     public static void signOut(String name, Session user) {
         playerList.remove(name);
@@ -62,8 +67,10 @@ public class PlayerServices {
     /**
      * Helper function used to determine if a name is valid
      *
-     * @param name  desired name
-     * @return  true if the name is valid
+     * @param name
+     *      desired name
+     * @return
+     *      true if the name is valid
      */
     private static boolean nameIsValid(String name) {
         if (name.length() < 4 || name.length() > 11)
@@ -83,8 +90,10 @@ public class PlayerServices {
     /**
      * Get Player from the playerList
      *
-     * @param playerName    name of player
-     * @return  Player object
+     * @param playerName
+     *      name of player
+     * @return
+     *      Player {@link Player}object
      */
     public static Player getPlayer(String playerName) {
         return playerList.get(playerName);

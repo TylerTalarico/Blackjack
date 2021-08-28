@@ -1,7 +1,6 @@
 package com.blackjack.util.GameUpdate;
 
 import com.blackjack.model.Player;
-import com.blackjack.util.GameUpdate.GameUpdate;
 
 public class PlayerDisconnectUpdate extends ActivePlayerShiftUpdate {
 
